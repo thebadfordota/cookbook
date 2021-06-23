@@ -7,7 +7,6 @@ from accounts.models import AdvUser
 
 
 class recipe(models.Model):
-    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=150,null = False, verbose_name="Имя блюда")
     user = models.ForeignKey(AdvUser,on_delete = models.SET_NULL, null = True )
     public = models.BooleanField()
@@ -24,7 +23,6 @@ class recipe(models.Model):
         return self.name
 
 class rating(models.Model):
-    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(AdvUser, on_delete=models.CASCADE )
     rating = models.IntegerField(null = False,
                                  verbose_name="Рейтинг блюда поставленное пользователем по 5 бальной шкале" )
@@ -38,7 +36,6 @@ class rating(models.Model):
     def __str__(self):
         return self.recipe_id
 class ingredients(models.Model):
-    id = models.AutoField(primary_key=True)
     recipe_id = models.ForeignKey('recipe', null=False, on_delete=models.CASCADE, verbose_name="ID блюда")
     name = models.CharField(max_length=200, null = False,verbose_name="Название ингредиента")
     value = models.IntegerField(null=False, verbose_name="Вес ингредиента в граммах")
@@ -50,7 +47,6 @@ class ingredients(models.Model):
     def __str__(self):
         return self.name
 class favorite_dishes(models.Model):
-    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(AdvUser,on_delete = models.CASCADE)
     recipe_id = models.ForeignKey('recipe', null = False, on_delete= models.CASCADE, verbose_name="ID блюда")
 
@@ -78,7 +74,6 @@ class typing(models.Model):
     def __str__(self):
         return self.recipe_id
 class meal(models.Model):
-    id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=50, null=False,
                                       verbose_name="Название трапезы")
     models.CharField(max_length=200, null=False, verbose_name="Название и кол-во одного ингрижиента блюда")
@@ -94,7 +89,6 @@ class meal(models.Model):
 
 
 class comments(models.Model):
-    id = models.AutoField(primary_key=True)
     recipe_id = models.ForeignKey('recipe', null=False, on_delete=models.CASCADE, verbose_name="ID блюда")
     user = models.ForeignKey(AdvUser,on_delete = models.CASCADE, null = True )
     datatime = models.DateTimeField(default=datetime.now, blank=True, verbose_name="Дата время")
