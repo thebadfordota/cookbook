@@ -19,7 +19,7 @@ class Recipe(BaseModel):
         ('Напиток', 'Напиток'),
         ('Десерт', 'Десерт'),
     )
-    name = models.CharField(max_length=150, verbose_name="Название блюда", default="Автор удалён")
+    name = models.CharField(max_length=150, verbose_name="Название блюда")
     user = models.ForeignKey(AdvUser, on_delete=models.SET_NULL, null=True)
     public = models.BooleanField()
     url_video = models.CharField(max_length=400, verbose_name="Ссылка на видео", default="NUll", null=True)

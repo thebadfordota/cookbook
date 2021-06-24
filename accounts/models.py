@@ -15,6 +15,7 @@ class AdvUser(AbstractUser):
         verbose_name = "Улучшенный пользователь"
         verbose_name_plural = "Улучшенные пользователи"
 
+
 user_registrated = Signal(providing_args=['instance'])
 
 

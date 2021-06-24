@@ -7,9 +7,11 @@ from .models import user_registrated
 
 class ChangeUserinfoForm(forms.ModelForm):
     email = forms.EmailField(required=True, label='Aдpec электронной почты')
+
     class Meta:
         model = AdvUser
         fields = ('username', 'email', 'first_name', 'patronymic', 'last_name' )
+
 
 class RegisterUserForm(forms.ModelForm):
     email = forms.EmailField(required=True, label='Адрес электронной почты')

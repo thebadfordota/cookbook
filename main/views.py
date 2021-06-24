@@ -1,21 +1,85 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .forms import RecipeForm
+from .forms import *
 from .models import *
 from accounts.models import *
 
 
 def home_page(request):
+    if request.method == 'POST':
+        form = FilteringRecipes(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['selection_field'] == 'Завтрак':
+                return redirect('all_breakfast')
+            elif form.cleaned_data['selection_field'] == 'Ужин':
+                return redirect('all_dinner')
+    else:
+        form = FilteringRecipes()
     all_recipe = Recipe.objects.order_by('id')
-    all_typing = Typing.objects.order_by('id')
-    all_rating = Rating.objects.order_by('id')
-    # form = RecipeForm()
+    all_typing = Typing.objects.order_by('recipe_id')
+    all_rating = Rating.objects.order_by('recipe_id')
+    # form = FilteringRecipes()
     context = {
         'info': "Здесь представлены все рецепты:",
         'title': "Все рецепты",
         'heading': "Все рецепты",
         'all_recipe': all_recipe,
         'all_typing': all_typing,
-        'all_rating': all_rating
+        'all_rating': all_rating,
+        'form': form
+    }
+    return render(request, "main/index.html", context)
+
+
+def all_breakfast(request):
+    if request.method == 'POST':
+        form = FilteringRecipes(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['selection_field'] == 'Завтрак':
+                return redirect('all_breakfast')
+            elif form.cleaned_data['selection_field'] == 'Ужин':
+                return redirect('all_dinner')
+    else:
+        form = FilteringRecipes()
+    all_recipe = Recipe.objects.filter(meal_type='Завтрак')
+    all_typing = Typing.objects.order_by('id')
+    all_rating = Rating.objects.order_by('id')
+    # form = FilteringRecipes()
+    context = {
+        'info': "Здесь представлены все завтраки:",
+        'title': "Все завтраки",
+        'heading': "Все завтраки",
+        'all_recipe': all_recipe,
+        'all_typing': all_typing,
+        'all_rating': all_rating,
+        'form': form
+
+    }
+    return render(request, "main/index.html", context)
+
+
+def all_dinner(request):
+    if request.method == 'POST':
+        form = FilteringRecipes(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['selection_field'] == 'Завтрак':
+                return redirect('all_breakfast')
+            elif form.cleaned_data['selection_field'] == 'Ужин':
+                return redirect('all_dinner')
+    else:
+        form = FilteringRecipes()
+    all_recipe = Recipe.objects.filter(meal_type='Ужин')
+    all_typing = Typing.objects.order_by('id')
+    all_rating = Rating.objects.order_by('id')
+    # form = FilteringRecipes()
+    context = {
+        'info': "Здесь представлены все завтраки:",
+        'title': "Все завтраки",
+        'heading': "Все завтраки",
+        'all_recipe': all_recipe,
+        'all_typing': all_typing,
+        'all_rating': all_rating,
+        'form': form
+
     }
     return render(request, "main/index.html", context)
 

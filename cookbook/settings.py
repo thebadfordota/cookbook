@@ -109,7 +109,7 @@ AUTH_USER_MODEL = 'accounts.AdvUser'
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Samara'
 
 USE_I18N = True
 
@@ -125,6 +125,16 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'sasha.skrynnik02'
+EMAIL_HOST_PASSWORD = 'zaxodi5673'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'CB team <sasha.skrynnik02@mail.ru>'
+SERVER_EMAIL = 'sasha.skrynnik02@mail.ru'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

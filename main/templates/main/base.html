@@ -25,35 +25,35 @@
 
             {% if not user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'login' %}">Войти</a>
+                <a class="nav-link" href="{% url 'accounts:login' %}">Войти</a>
             </li>
             {% endif %}
 
             {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+                <a class="nav-link" href="{% url 'accounts:logout' %}">Выйти</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'profile_change' %}">Изменить Профиль</a>
+                <a class="nav-link" href="{% url 'accounts:profile_change' %}">Изменить Профиль</a>
             </li>
             {% endif %}
 
             {% if not user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'register' %}">Зарегистрироваться</a>
+                <a class="nav-link" href="{% url 'accounts:register' %}">Зарегистрироваться</a>
             </li>
             {% endif %}
 
             {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'password_change' %}">Изменить пароль</a>
+                <a class="nav-link" href="{% url 'accounts:password_change' %}">Изменить пароль</a>
             </li>
             {% endif %}
 
             {% if not user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'password_reset' %}">Сбросить пароль</a>
+                <a class="nav-link" href="{% url 'accounts:password_reset' %}">Сбросить пароль</a>
             </li>
             {% endif %}
 
