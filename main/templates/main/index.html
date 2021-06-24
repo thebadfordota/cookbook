@@ -4,11 +4,14 @@
 {% block content %}
 <h1>{{ heading }}</h1>
 <div class="main_welcom">
-    <p>
-        Здравствуйте, это сайт для кулинарных рецептов!<br><br>
-        {{ info }}
-    </p>
-    <h1>Таблица:</h1>
+    <form method="post" class="box">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="form_1">
+        {{ form.selection_field }}
+        <div class="mb-3">
+            <button type="submit" class="btn btn-success" name="">Отфильтровать</button>
+        </div>
+    </form>
     <table class="table table-striped table-hover">
         <thead>
             <tr>
@@ -25,28 +28,26 @@
             <tr>
                 <td><a href="{% url 'view_recipe' el.pk %}">{{ el.name }}</a></td>
                 <td>{{ el.meal_type }}</td>
+
                 {% for curr_type in all_typing %}
-                <td>{{ curr_type.complexity }}</td>
-                <td>{{ curr_type.cooking_time }}</td>
+                {% if curr_type.recipe_id == el %}
+                    <td>{{ curr_type.complexity }}</td>
+                    <td>{{ curr_type.cooking_time }}</td>
+                {% endif %}
                 {% endfor %}
+
                 {% for curr_rate in all_rating %}
-                    {% if curr_rate.rating == None %}
-                        <td>Нет оценки</td>
-                    {% else %}
-                        <td>{{ curr_rate.rating }}</td>
+                    {% if curr_rate.recipe_id == el %}
+                        {% if curr_rate.rating == None %}
+                            <td>Нет оценки</td>
+                        {% else %}
+                         <td>{{ curr_rate.rating }}</td>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <h1>Форма:</h1>
-    <form method="post" class="box">
-        {% csrf_token %}
-        {{ form.selection_field }}
-        <div class="mb-3">
-            <button type="submit" class="btn btn-success">Отфильтровать</button>
-        </div>
-    </form>
 </div>
 {% endblock %}
