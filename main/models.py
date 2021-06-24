@@ -4,7 +4,14 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from accounts.models import AdvUser
 
 
-class Recipe(models.Model):
+class BaseModel(models.Model):
+    objects = models.Manager()
+
+    class Meta:
+        abstract = True
+
+
+class Recipe(BaseModel):
     MEAL_CHOICES = (
         ('Завтрак', 'Завтрак'),
         ('Обед', 'Обед'),
@@ -12,7 +19,7 @@ class Recipe(models.Model):
         ('Напиток', 'Напиток'),
         ('Десерт', 'Десерт'),
     )
-    name = models.CharField(max_length=150, verbose_name="Название блюда")
+    name = models.CharField(max_length=150, verbose_name="Название блюда", default="Автор удалён")
     user = models.ForeignKey(AdvUser, on_delete=models.SET_NULL, null=True)
     public = models.BooleanField()
     url_video = models.CharField(max_length=400, verbose_name="Ссылка на видео", default="NUll", null=True)
@@ -30,11 +37,13 @@ class Recipe(models.Model):
         return self.name
 
 
-class Rating(models.Model):
+class Rating(BaseModel):
     user = models.ForeignKey(AdvUser, on_delete=models.CASCADE)
     rating = models.IntegerField(
         verbose_name="Пользовательский рейтинг блюда",
         default=1,
+        blank=True,
+        null=True,
         validators=[
             MaxValueValidator(5),
             MinValueValidator(1)
@@ -51,7 +60,7 @@ class Rating(models.Model):
         return str(self.recipe_id)
 
 
-class Ingredients(models.Model):
+class Ingredients(BaseModel):
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name="ID блюда")
     name = models.CharField(max_length=200, verbose_name="Название ингредиента")
     value = models.IntegerField(verbose_name="Вес ингредиента в граммах")
@@ -65,7 +74,7 @@ class Ingredients(models.Model):
         return self.name
 
 
-class FavoriteDishes(models.Model):
+class FavoriteDishes(BaseModel):
     user = models.ForeignKey(AdvUser, on_delete=models.CASCADE)
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name="ID блюда")
 
@@ -77,7 +86,7 @@ class FavoriteDishes(models.Model):
         return str(self.recipe_id)
 
 
-class Typing(models.Model):
+class Typing(BaseModel):
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name="ID блюда", null=True)
     complexity = models.IntegerField(
         verbose_name="Сложность приговления блюда",
@@ -98,7 +107,7 @@ class Typing(models.Model):
         return str(self.recipe_id)
 
 
-class Comments(models.Model):
+class Comments(BaseModel):
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name="ID блюда")
     user = models.ForeignKey(AdvUser, on_delete=models.CASCADE, null=True)
     data_time = models.DateTimeField(default=datetime.now, blank=True, verbose_name="Дата время")

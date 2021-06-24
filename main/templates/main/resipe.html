@@ -1,0 +1,57 @@
+{% extends 'main/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+{% if error == 'zero' %}
+<h1>{{ heading }}</h1>
+<p>Автор {{ autor }}<br/>
+   Сложность {{ typing.complexity }} из 5 <br/>
+   Время готовки {{ typing.cooking_time }} в секунду потом перведём
+</p>
+
+<div class="main_welcom">
+
+    <p>
+        {{ text }}<br><br>
+
+    </p>
+    <h2 align="center">Видео про готовку</h2>
+    <p>
+        <iframe width="640" height="480" src="{{ video_url }}">
+</iframe>
+    </p>
+    <h2 align = "center">Фото</h2>
+    <p>
+        <img src="{{ images.url }}" alt="Картошка" width="300px" height="300px">
+    </p>
+    <!-- Форма для ввода -->
+    <div>
+        <h3 align = "center">Добавить коментарий</h3>
+        <form action="add_coment/{{ id_recipe}}" method = "get">
+            Текст коментария
+            <input type="text" name="text_coment"><br/><br/>
+
+            <input type="submit" value = "Добавить коментарий">
+        </form>
+    </div>
+    <h2 align = "center">Коментарии</h2>
+    {% for a in comments %}
+
+        <p style = "border-style: groove; margin-bottom: 10px;margin-top: 10px;">
+            добавил: {{ a.user.last_name }} {{  a.user.first_name}} <br/>
+            Время и дата:{{ a.data_time }} <br/>
+            Сам текст: {{ a.text }} <br/>
+            {% if a.user.id == user.id %}
+            <a href = "delete_coment/{{ a.id }}/{{ id_recipe }}">
+                <input type="submit" value = "Удалить коментарий">
+            </a>
+            {% endif %}
+        </p>
+
+    {% endfor %}
+</div>
+{% else %}
+    <h1>{{ error }}</h1>
+{% endif %}
+
+{% endblock %}
