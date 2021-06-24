@@ -20,5 +20,12 @@
             <td>Олег</td>
         </tbody>
     </table>
+    <form method="post" class="box">
+        {% csrf_token %}
+        {{ form.meal_type }}
+        <div class="mb-3">
+            <button type="submit" class="btn btn-success">GO</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
