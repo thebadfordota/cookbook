@@ -14,6 +14,6 @@ urlpatterns = [
     url(r'^recipe/add_favorite/([0-9]{1,5})', views.add_favorite),
     url(r'^recipe/delete_favorite/([0-9]{1,5})', views.delete_favorite),
     url(r'^recipe/push_rating/([0-9]{1,5})/([0-5])', views.push_rating),
-    url(r'^recipe/add_page', views.add_page),
-    url(r'^recipe/add_ricipe', views.add_ricipe, name="add_recipe"),
+    url(r'^recipe/add_page', views.add_page, name="add_recipe"),
+    url(r'^recipe/add_ricipe', views.add_ricipe),
 ]
