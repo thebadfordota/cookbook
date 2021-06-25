@@ -129,18 +129,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
-# import socket
 EMAIL_HOST = 'smtp.mail.ru'
-# EMAIL_HOST = socket.gethostbyname('smtp.mail.ru')
-
 EMAIL_PORT = 2525
-# EMAIL_HOST_USER = 'sasha.skrynnik02'
 EMAIL_HOST_USER = 'supp0rtuw1.006@mail.ru'
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'CookBook team <supp0rtuw1.006@mail.ru>'
-# SERVER_EMAIL = 'sasha.skrynnik02@mail.ru'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
