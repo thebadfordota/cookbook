@@ -1,0 +1,68 @@
+{% extends 'main/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+{% block script %}
+    count_ingridinet = 0
+    fuction check_table(){
+
+    }
+{% endblock %}
+{% block content %}
+<h1>{{ heading }}</h1>
+<div class="main_welcom">
+    <h2 align = "center">Добавить рецепт</h2>
+    <p>
+    <form action="/recipe/add_ricipe" method = "POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        Название <input type="text" name = "name"><br/>
+        Сделать рецепт публичным <input type ="checkbox" name = "public"> <br/>
+        Ссылка на видео в юутубе <input type="text" name = "url_video"> <br/>
+        Тип
+        <select name = "meal">
+            <option value="Завтрак" selected>Завтрак</option>
+            <option value="Обед">Обед</option>
+            <option value="Ужин">Ужин</option>
+            <option value="Напиток">Напиток</option>
+            <option value="Десерт">Десерт</option>
+        </select>
+        <br/>
+        Картинка <input type="file" name = "image">
+        <br/>
+        Инструкция
+        <br/>
+        <textarea cols = 30 maxlength = 4000 name = "text" rows = 15 wrap="hard" style="resize: none;"></textarea>
+        <br/>
+        Время готовки
+        Часы
+        <input type="number" min = 0 max = 10 value = 0 size = 10 name="time_hour"><br/>
+        Минуты
+        <input type="number" min = 1 max = 59 value = 1 size = 10 name="time_minutes"><br/>
+        Сложность
+        <select name = "complexity">
+            <option value="1" selected>Очень легко</option>
+            <option value="2">Легко</option>
+            <option value="3">Средне</option>
+            <option value="4">Сложно</option>
+            <option value="5">Очень сложно</option>
+        </select>
+        <input type="submit" >
+        <br/>
+        Используемые ингридиенты
+        <table class="table table-striped table-hover" >
+            <thead>
+                <tr>
+                    <th scope="col">Ингридиент</th>
+                    <th scope="col">Вес в граммах</th>
+                </tr>
+            </thead>
+            <div id = "tbody_table_ingredients" onclick="check_table()" >
+                <tbody>
+                    <td><input type="text" id = "N0"></td>
+                    <td><input type="text" id = "V0"></td>
+                </tbody>
+            </div>
+        </table>
+    </form>
+    </p>
+
+</div>
+{% endblock %}

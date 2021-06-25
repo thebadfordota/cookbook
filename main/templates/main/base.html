@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="{% static 'main/css/all.css' %}" />
     <link rel="stylesheet" href="{% static 'main/css/styles.css' %}" />
     <link rel="shortcut icon" href="{% static 'main/images/food_icon.png' %}" type="image/png">
+    <script src="{%  static 'main/js/jquery-3.6.0.js' %}"></script>
+    <script>
+        {% block script %} {% endblock %}
+    </script>
 </head>
 <body>
     <div class="page">
@@ -26,12 +30,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">Все рецепты</a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'add_recipe' %}">Добавить рецепт</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item dropdown">
                         <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <i class="fas fa-user"></i>
                         </a>
-
-
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     {% if not user.is_authenticated %}
                             <a class="dropdown-item" href="{% url 'accounts:login' %}">Войти</a>
@@ -66,3 +73,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
+<style>
+    {% block style %}{% endblock %}
+</style>

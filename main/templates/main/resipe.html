@@ -1,57 +1,235 @@
 {% extends 'main/base.html' %}
 {% block title %} {{ title }} {% endblock %}
 
+{% block script %}
+    ingredients = [
+{% for a in ingredients %}
+   [ ['{{ a.name }}'],['{{ a.value }}']],
+{% endfor %}
+    ];
+    function test(){
+
+        var count = document.getElementById("count_ingredients").value;
+        var table = "<thead>"+
+            "<tr>"+
+                "<th >Название ингридиенты</th>" +
+                "<th>вес в граммах</th>"+
+            "</tr>"+
+        "</thead>";
+        for (var a = 0; a < ingredients.length; a++){
+            var count_value = parseInt(ingredients[a][1])*count ;
+             table += "<tbody >"+
+             "<td>"+ingredients[a][0]+"</td>"+
+             "<td>"+count_value.toString()+"</td>"+
+            " </tbody>";
+
+        }
+        document.getElementById("main_div_ingredients").innerHTML = table;
+    }
+    function delete_coment_display_none(comment_id){
+      document.getElementById(comment_id).style.display = "none";
+
+    }
+    function delete_coment(url, comment_id){
+      $.ajax({
+                  url: url,
+                  type: 'POST',
+                  data: { },
+                  success: function(data) {
+                    document.getElementById(comment_id).style.animationName = "trans";
+                    document.getElementById(comment_id).style.animationDuration = "1s";
+                    document.getElementById(comment_id).style.animationTimingFunction = "1s";
+                    document.getElementById(comment_id).style.animationIterationCount = "1";
+                    document.getElementById(comment_id).style.animationPlayState = "running";
+                    document.getElementById(comment_id).style.animationFillMode = "forwards";
+                    setTimeout(delete_coment_display_none, 1000, comment_id);
+
+
+                  },
+              });
+    }
+    function add_coment(url){
+      text_coment = document.getElementById("text_new_coment").value;
+      $.ajax({
+      url: url,
+      type: 'POST',
+      data: {'text_coment':text_coment
+      },
+      success: function (data) {
+          var coment_html = document.getElementById("all_coment").innerHTML;
+          document.getElementById("all_coment").innerHTML = data + coment_html;
+
+      }
+    });
+    }
+    /*
+      1 - кнопка
+      2 - поле для ввода
+
+    */
+    function step_1_edit_coment(input_botton, input_text, url_updata){
+             document.getElementById(input_botton).innerHTML = "<input type=\"button\" value = \"Сохранить\" onclick=\"step_2_edit_coment('"+input_botton+"','"+input_text+"', '"+url_updata+"' )\">" ;
+             var old_coment = document.getElementById(input_text).innerHTML;
+             document.getElementById(input_text).innerHTML = "<input type=\"text\" value = \""+old_coment+"\" id = \""+input_text+"T\">" ;
+        // "<input type=\"button\" value = \"Сохранить\" onclick=\"step_2_edit_coment()\">" ;
+    }
+    function step_2_edit_coment(input_botton, input_text, url_updata){
+       document.getElementById(input_botton).innerHTML = "<input type=\"button\" value = \"Редактировать\" onclick=\"step_1_edit_coment('"+input_botton+"','"+input_text+"', '"+url_updata+"' )\">" ;
+       var new_coment = document.getElementById(input_text+"T").value;
+       document.getElementById(input_text).innerHTML = new_coment ;
+         $.ajax({
+        url: url_updata,
+        type: 'POST',
+        data: {'coment':new_coment
+        },
+        success: function (data) {
+
+        }
+        });
+    }
+{% endblock %}
 {% block content %}
 {% if error == 'zero' %}
+{% if user.is_authenticated %}
+    {% if favorite_status.user.id == user.id %}
+    <a href = "delete_favorite/{{ id_recipe }}">
+        <input type="button" value = "Удалить из избранного">
+    </a>
+    {% else %}
+        <a href = "add_favorite/{{ id_recipe }}">
+            <input type="button" value = "Добавить в избранное">
+        </a>
+    {% endif %}
+{% endif %}
+
 <h1>{{ heading }}</h1>
 <p>Автор {{ autor }}<br/>
-   Сложность {{ typing.complexity }} из 5 <br/>
-   Время готовки {{ typing.cooking_time }} в секунду потом перведём
-</p>
 
+   Сложность {% if typing.complexity == 1 %}
+                очень легко
+            {% endif %}
+            {% if typing.complexity == 2 %}
+                легко
+            {% endif %}
+            {% if typing.complexity == 3 %}
+                среднее
+            {% endif %}
+            {% if typing.complexity == 4 %}
+                сложно
+            {% endif %}
+            {% if typing.complexity == 5 %}
+                очень сложно
+            {% endif %}
+     <br/>
+   Время готовки {{ hours }} : {{ minutes }} <br/>
+   Тип: {{ meal }}
+</p>
+<p>
+    Общий рейтинг {{ rating.rating }} из 5 баллов (Всего оценили {{ rating.count }})
+    <br/>
+    {% if user.is_authenticated %}
+        {% if rating.here_rating == "zero" %}
+            Данное блюдо вам не было оценено
+        {% else %}
+                Ваш рейтинг {{ rating.here_rating.rating }} из 5 баллов
+        {% endif %}
+        <br/>
+        Ваша оценка
+        <br/>
+        {% for a in 6|get_range %}
+        <a href="push_rating/{{ id_recipe }}/{{ a }}">
+            <input type="button" value="{{ a }}">
+        </a>
+
+        {% endfor %}
+
+    {% endif %}
+</p>
+<h2 align="center">Ингридиенты</h2>
+кол-во порций <input type="number" min = 1 max = 12 value = 1 size = 10 id="count_ingredients" onclick="test()">
+<p>
+     <table class="table table-striped table-hover" id = "main_div_ingredients" >
+        <thead>
+            <tr>
+                <th scope="col">Название ингридиенты</th>
+                <th scope="col">вес в граммах</th>
+            </tr>
+        </thead>
+
+    {% for a in ingredients %}
+
+        <tbody >
+            <td>{{ a.name }}</td>
+            <td>{{ a.value }}</td>
+        </tbody>
+
+    {% endfor%}
+    </table>
+
+</p>
 <div class="main_welcom">
 
     <p>
-        {{ text }}<br><br>
+        {{ text }}}<br><br>
 
     </p>
-    <h2 align="center">Видео про готовку</h2>
-    <p>
-        <iframe width="640" height="480" src="{{ video_url }}">
-</iframe>
-    </p>
+    {% if video_url != "NULL"%}
+        <h2 align="center">Видео про готовку</h2>
+        <p>
+            <iframe width="420" height="345" src="{{ video_url }}">
+        </iframe>
+            </p>
+    {% endif %}
+    {% if images != "" %}
     <h2 align = "center">Фото</h2>
     <p>
         <img src="{{ images.url }}" alt="Картошка" width="300px" height="300px">
     </p>
+     {% endif %}
     <!-- Форма для ввода -->
     <div>
         <h3 align = "center">Добавить коментарий</h3>
-        <form action="add_coment/{{ id_recipe}}" method = "get">
+        <form action="#" method = "get">
             Текст коментария
-            <input type="text" name="text_coment"><br/><br/>
+            <input type="text" id="text_new_coment"><br/><br/>
+            <input type="button" value = "Добавить коментарий" onclick = "add_coment('add_coment/{{ id_recipe}}')">
 
-            <input type="submit" value = "Добавить коментарий">
+
         </form>
     </div>
     <h2 align = "center">Коментарии</h2>
+    <div id = "all_coment">
     {% for a in comments %}
-
-        <p style = "border-style: groove; margin-bottom: 10px;margin-top: 10px;">
-            добавил: {{ a.user.last_name }} {{  a.user.first_name}} <br/>
+      <div id = "coment{{ a.id }}">
+        <p style = "border-style: groove; margin-bottom: 10px;margin-top: 10px;" >
+            добавил: {{ a.user.username }} <br/>
             Время и дата:{{ a.data_time }} <br/>
-            Сам текст: {{ a.text }} <br/>
+            Сам текст: <samp id = "coment_edit_text{{ a.id }}">{{ a.text }}</samp> <br/>
             {% if a.user.id == user.id %}
-            <a href = "delete_coment/{{ a.id }}/{{ id_recipe }}">
-                <input type="submit" value = "Удалить коментарий">
-            </a>
+
+                <input type="submit" value = "Удалить" onclick="delete_coment('delete_coment/{{ a.id }}/{{ id_recipe }}','coment{{ a.id }}' )">
+                <samp id = "coment_edit_botton{{ a.id }}" >
+                    <input type="button" value = "Редактировать" onclick="step_1_edit_coment('coment_edit_botton{{ a.id }}','coment_edit_text{{ a.id }}', 'updata_coment/{{ a.id }}/{{ id_recipe }}')"> <br/>
+                </samp>
+
             {% endif %}
         </p>
-
+      </div>
     {% endfor %}
+    </div>
 </div>
 {% else %}
     <h1>{{ error }}</h1>
 {% endif %}
+
+{% endblock %}
+
+{% block style %}
+@keyframes trans {
+from {opacity:1 }
+to {opacity:0;
+
+}
+}
 
 {% endblock %}
