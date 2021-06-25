@@ -1,53 +1,67 @@
 {% extends 'main/base.html' %}
+{% load static %}
 {% block title %} {{ title }} {% endblock %}
 
 {% block content %}
 <h1>{{ heading }}</h1>
 <div class="main_welcom">
-    <form method="post" class="box">
-        {% csrf_token %}
-        <input type="hidden" name="form_type" value="form_1">
-        {{ form.selection_field }}
-        <div class="mb-3">
-            <button type="submit" class="btn btn-success" name="">Отфильтровать</button>
+        <div class="main_about">
+            <form method="post" class="box">
+                {% csrf_token %}
+                    <div class="about_left">
+                        <input type="hidden" name="form_type" value="form_1">
+                        {{ form.selection_field }}
+                    </div>
+                    <div class="about_right">
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-success" name="">Отфильтровать</button>
+                        </div>
+                    </div>
+            </form>
         </div>
-    </form>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Название</th>
-                <th scope="col">Тип</th>
-                <th scope="col">Сложность</th>
-                <th scope="col">Время готовки</th>
-                <th scope="col">Ваш рейтинг</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for el in all_recipe %}
 
-            <tr>
-                <td><a href="{% url 'view_recipe' el.pk %}">{{ el.name }}</a></td>
-                <td>{{ el.meal_type }}</td>
-
-                {% for curr_type in all_typing %}
-                {% if curr_type.recipe_id == el %}
-                    <td>{{ curr_type.complexity }}</td>
-                    <td>{{ curr_type.cooking_time }}</td>
-                {% endif %}
-                {% endfor %}
-
-                {% for curr_rate in all_rating %}
-                    {% if curr_rate.recipe_id == el %}
-                        {% if curr_rate.rating == None %}
-                            <td>Нет оценки</td>
-                        {% else %}
-                         <td>{{ curr_rate.rating }}</td>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="main_welcom">
+        {% for el in all_recipe %}
+        <div class="container mt-5">
+            <div class="card">
+                <div class="card-header">
+                    <h5><a href="{% url 'view_recipe' el.pk %}">{{ el.name }}</a></h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="{% url 'view_recipe' el.pk %}">
+                            <img src='{{ el.image.url }}'
+                                 class="img-fluid"
+                                 style="width: 600px; height: 400px;">
+                        </a>
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">{{ el.meal_type }}</li>
+                            {% for curr_type in all_typing %}
+                                {% if curr_type.recipe_id == el %}
+                                    <li class="list-group-item">Сложность приготовления: {{ curr_type.complexity }}</li>
+                                    <li class="list-group-item">Время приготовления: {{ curr_type.cooking_time }}</li>
+                                {% endif %}
+                            {% endfor %}
+                            {% for curr_rate in all_rating %}
+                                {% if curr_rate.recipe_id == el %}
+                                    {% if curr_rate.rating == None %}
+                                        <li class="list-group-item">Вы не оценили</li>
+                                    {% else %}
+                                        <li class="list-group-item">Ваш рейтинг: {{ curr_rate.rating }}</li>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            <li class="list-group-item">Общий рейтинг:</li>
+                        </ul>
+                        <a href="#" class="btn btn-primary" style="color: white; width: 110px; height: 50px;"
+                           onclick="window.location.href='{% url 'view_recipe' el.pk %}'">Перейти</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

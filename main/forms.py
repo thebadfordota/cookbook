@@ -23,7 +23,8 @@ class FilteringRecipes(forms.Form):
 
     selection_field = forms.ChoiceField(
         choices=MEAL_CHOICES,
-        required=False
+        required=False,
+        initial='Все категории'
     )
 
 

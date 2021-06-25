@@ -32,7 +32,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-    margin-top: 100px;
+    margin-top: 50px;
+    margin-bot: 15px;
     font-size: 50px;
     font-weight: 300;
     letter-spacing: 3px;
@@ -57,7 +58,8 @@ p {
 .main_welcom{
     display: flex;
     margin: auto;
-    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-bot: 25px;
     flex-direction: column;
   	background-size: cover;
   	background-position: 50% 50%;
@@ -85,6 +87,9 @@ header {
     margin-top: auto;
     padding-top: 10px;
     font-size: 20px;
+}
+.nav{
+    background-color: #070707;
 }
 
 .nav-link {
@@ -148,8 +153,31 @@ header {
     min-height: 70px;
     padding: 15px;
     color: #FFF;
-    margin-top: auto;
+    margin-top: 70px;
 }
+
+        /* Element position */
+
+.main_about{
+}
+
+.img_left {
+    margin: auto 0;
+}
+
+img {
+    transition: 1.2s;
+}
+
+img:hover {
+    transform: scale(1.03);
+}
+
+.img_right {
+    margin: auto 0;
+}
+
+
         /* Form */
 
 form{
