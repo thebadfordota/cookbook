@@ -134,7 +134,14 @@
         </a>
     {% endif %}
 {% endif %}
-
+{% if  recipe.user == user %}
+    <a href="/recipe/delete_recipe/{{ recipe.id }}">
+        <input type = "button"  value = "Удалить рецепт" ><br/>
+    </a>
+    <a href="/recipe/edit_page/{{ recipe.id }}">
+        <input type = "button"  value = "Редактировать рецепт" ><br/>
+    </a>
+{% endif %}
 <h1>{{ heading }}</h1>
 <p>Автор {{ autor }}<br/>
 

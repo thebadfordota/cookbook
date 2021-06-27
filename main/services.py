@@ -1,15 +1,15 @@
+from django.shortcuts import render, redirect, HttpResponse
 import re
 from PIL import Image
 from accounts.models import *
 from .models import *
-
-
 class checking_data_registration:
     def __init__(self, django_request):
         self.request = None
         self.old_result = {}
         self.error = []
         self.request = django_request
+
 
     def check_name(self):
         try:
@@ -119,6 +119,18 @@ class checking_data_registration:
             zero_time()
             self.error.append("Минимальное допустимое время 5 минут")
 
+    def update_recipe_check(self):
+        self.check_name()
+        self.check_public()
+        self.check_url_video()
+        self.check_text()
+        self.check_meal_type()
+        self.check_complexity()
+        self.check_cooking_time()
+
+        return {'old_result': self.old_result,
+                'error': self.error, }
+
     def recipe_check(self):
         self.check_name()
         self.check_public()
@@ -149,6 +161,8 @@ class checking_data_registration:
                 break
         if len == 0:
             self.error.append("Минимальное кол-во ингридентов одна ")
+            ingredients.append({'id_name': 'N0', 'name': "",
+                                'id_value': 'V0', 'value': ""})
         else:
             len -= 1
         new_input = []
@@ -161,7 +175,6 @@ class checking_data_registration:
                 'ingredients':ingredients,
                 'new_input':new_input, }
 
-
 class data_normalization_during_registration:
     request = None
     def __init__(self,django_request):
@@ -172,17 +185,14 @@ class data_normalization_during_registration:
 
     def name(self):
         return self.request.POST.get('name')
-
     def user(self):
         return AdvUser.objects.get(id=self.request.user.id)
-
     def public(self):
         public = self.request.POST.get('public')
         if public == "on":
             return True
         else:
             return False
-
     def url_video(self):
         try:
             url = str(self.request.POST.get('url_video'))
@@ -191,19 +201,14 @@ class data_normalization_during_registration:
                return "https://www.youtube.com/embed/" + str(url[1])
         except Exception:
             return "NULL"
-
     def text(self):
         return self.request.POST.get('text')
-
     def meal_type(self):
         return self.request.POST.get('meal')
-
     def image(self):
         return self.request.FILES['image']
-
     def complexity(self):
         return self.request.POST.get('complexity')
-
     def cooking_time(self):
         def get_minutes():
             try:
@@ -221,7 +226,6 @@ class data_normalization_during_registration:
                 return time_hour * 60
             return (time_hour * 60) + time_minutes
         return get_minutes()
-
     def add_ingredients(self,one_recipe):
         for a in range(30):
             name = self.request.POST.get('N' + str(a))
@@ -231,3 +235,73 @@ class data_normalization_during_registration:
                 ingredients.save()
             else:
                 break
+
+class get_one_recipe:
+    request = None
+    id_recipe = None
+    def __init__(self, request, id_recipe):
+        self.request = request
+        self.id_recipe = id_recipe
+
+    def rounding_up_hours(self,minutes):
+        if minutes < 60:
+            return 0
+        else:
+            return round(minutes/60)
+    def get(self):
+        def get_rating():
+            rating = Rating.objects.filter(recipe_id=one_recipe)
+            count = 0
+            all = 0
+            for a in rating:
+                all += int(a.rating)
+                count += 1
+            try:
+                here_rating = Rating.objects.get(recipe_id=one_recipe, user=user)
+            except Exception:
+                here_rating = "zero"
+            if count == 0:  # Это нужно чтобы он не поделил на ноль
+                return {'rating': 0,
+                        'here_rating': here_rating,
+                        'count': str(count),
+                        }
+            else:
+                return {'rating': str(round(all / count, 2)),
+                        'here_rating': here_rating,
+                        'count': str(count),
+                        }
+
+        try:
+            one_recipe = Recipe.objects.get(id = self.id_recipe)
+        except Exception:
+            return redirect("/error.html")
+        #нужно получить коментарий
+        coment_recipe = Comments.objects.filter(recipe_id = self.id_recipe)
+        ingredients = Ingredients.objects.filter(recipe_id = one_recipe)
+        try:
+            user = AdvUser.objects.get(id = self.request.user.id)
+            favorite_status = FavoriteDishes.objects.get(user = user, recipe_id = one_recipe)
+        except Exception:
+            favorite_status = None
+
+
+        context = {
+            'autor':str(one_recipe.user.username),
+            'heading': str(one_recipe.name),
+            'title':  str(one_recipe.name),
+            'text':str(one_recipe.text).replace('',''),
+            'video_url':str(one_recipe.url_video),
+            'images':one_recipe.image,
+            'comments':coment_recipe,
+            'id_recipe':str(self.id_recipe),
+            'user': self.request.user, #id пользоватля, который запрашивает страницу
+            'complexity':one_recipe.complexity,
+            'hours':self.rounding_up_hours(one_recipe.cooking_time),
+            'minutes':int(one_recipe.cooking_time)%60,
+            'ingredients':ingredients,
+            'favorite_status':favorite_status,
+            'meal':str(one_recipe.meal_type),
+            'rating':get_rating(),
+            'recipe':one_recipe,
+        }
+        return render(self.request, "main/resipe.html", context)

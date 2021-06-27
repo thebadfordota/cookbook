@@ -21,13 +21,12 @@
     }
 {% endblock %}
 {% block content %}
-<h1>{{ heading }}</h1>
 <div class="main_welcom">
-    <h2 align = "center" >Добавить рецепт</h2>
+    <h2 align = "center" >{{ heading }}</h2>
     {% for a in error %}
         {{a}}<br>
     {% endfor %}
-    <form action="/recipe/add_ricipe" method = "POST" enctype="multipart/form-data" class="box" style="margin-top: 45px;">
+    <form action="{{ action }}" method = "POST" enctype="multipart/form-data" class="box" style="margin-top: 45px;">
         {% csrf_token %}
         <input type="text" name = "name" value = "{{old_result.name}}"
                placeholder="Название рецепта"><br><br>
