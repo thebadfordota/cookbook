@@ -4,6 +4,7 @@ from .models import *
 from accounts.models import *
 from django.template.defaulttags import register
 from django.views.decorators.csrf import csrf_exempt
+from . import services
 
 
 @register.filter
@@ -16,26 +17,24 @@ def home_page(request):
     if request.method == 'POST':
         form = FilteringRecipes(request.POST)
         if form.is_valid():
-            if form.cleaned_data['selection_field'] == 'Завтрак':
+            if form.cleaned_data['selection_meal'] == 'Завтрак':
                 recipe_type = 'Завтрак'
-            elif form.cleaned_data['selection_field'] == 'Обед':
+            elif form.cleaned_data['selection_meal'] == 'Обед':
                 recipe_type = 'Обед'
-            elif form.cleaned_data['selection_field'] == 'Ужин':
+            elif form.cleaned_data['selection_meal'] == 'Ужин':
                 recipe_type = 'Ужин'
-            elif form.cleaned_data['selection_field'] == 'Напиток':
+            elif form.cleaned_data['selection_meal'] == 'Напиток':
                 recipe_type = 'Напиток'
-            elif form.cleaned_data['selection_field'] == 'Десерт':
+            elif form.cleaned_data['selection_meal'] == 'Десерт':
                 recipe_type = 'Десерт'
     else:
         form = FilteringRecipes()
     if recipe_type == '':
         all_recipe = Recipe.objects.order_by('id')
-        all_typing = Typing.objects.order_by('id')
         all_rating = Rating.objects.order_by('id')
         title = "Все рецепты"
     else:
         all_recipe = Recipe.objects.filter(meal_type=recipe_type)
-        all_typing = Typing.objects.order_by('id')
         all_rating = Rating.objects.order_by('id')
         if recipe_type == 'Ужин' or recipe_type == 'Обед' or recipe_type == 'Десерт':
             title = "Все " + str(recipe_type) + "ы"
@@ -48,7 +47,6 @@ def home_page(request):
         'title': title,
         'heading': title,
         'all_recipe': all_recipe,
-        'all_typing': all_typing,
         'all_rating': all_rating,
         'form': form,
     }
@@ -57,16 +55,18 @@ def home_page(request):
 
 def get_one_recipe(request, id_recipe):
 
+    def rounding_up_hours(minutes):
+        if minutes < 60:
+            return 0
+        else:
+            return round(minutes/60)
+
     try:
         one_recipe = Recipe.objects.get(id = id_recipe)
     except Exception:
-        return render(request, "main/resipe.html",
-                      {'error': 'Страница с данным рецептом не найдена '
-                                'или у вас нету прав к нему',
-                       'heading': "Ошибка",})
+        return redirect("/error.html")
     #нужно получить коментарий
     coment_recipe = Comments.objects.filter(recipe_id = id_recipe)
-    typing_recipe = Typing.objects.get(recipe_id = one_recipe)
     ingredients = Ingredients.objects.filter(recipe_id = one_recipe)
     try:
         user = AdvUser.objects.get(id = request.user.id)
@@ -98,19 +98,18 @@ def get_one_recipe(request, id_recipe):
                     }
 
     context = {
-       'error': 'zero',
         'autor':str(one_recipe.user.username),
         'heading': str(one_recipe.name),
         'title':  str(one_recipe.name),
-        'text':str(one_recipe.text),
+        'text':str(one_recipe.text).replace('',''),
         'video_url':str(one_recipe.url_video),
         'images':one_recipe.image,
         'comments':coment_recipe,
         'id_recipe':str(id_recipe),
         'user': request.user, #id пользоватля, который запрашивает страницу
-        'typing':typing_recipe,
-        'hours':round(int(typing_recipe.cooking_time)/60),
-        'minutes':int(typing_recipe.cooking_time)%60,
+        'complexity':one_recipe.complexity,
+        'hours':rounding_up_hours(one_recipe.cooking_time),
+        'minutes':int(one_recipe.cooking_time)%60,
         'ingredients':ingredients,
         'favorite_status':favorite_status,
         'meal':str(one_recipe.meal_type),
@@ -139,14 +138,6 @@ def delete_coment(request, id_coment, id_recipe):
         one_coment.delete()
     return HttpResponse(status = 200)
 
-
-@csrf_exempt
-def updata_coment(request, id_coment, id_recipe):
-    one_coment = Comments.objects.get(id = id_coment)
-    if request.user.id == one_coment.user.id:
-        one_coment.text = request.POST.get("coment")
-        one_coment.save()
-    return HttpResponse(status = 200)
 
 
 def add_favorite(request, id_recipe):
@@ -182,46 +173,49 @@ def push_rating(request, id_recipe, rating):
 
 
 def add_page(request):
+    if not request.user.is_authenticated:
+        return redirect("/error.html")
     context = {
         'title':'Добавить рецепт',
-
+        'meal':['Завтрак', 'Обед','Ужин','Напиток','Десерт'],
+        'count_ingredients':0,
+        'hours':0,
+        'minutes':0,
     }
     return render(request, "main/add_recipe.html", context)
 
 
 @csrf_exempt
 def add_ricipe(request):
-    def get_good_url_video():
-        url = str(request.POST.get('url_video'))
-        url = url.split("=")
-        if len(url) == 0:
-            return "NULL"
-        else:
-            return "https://www.youtube.com/embed/"+ str(url[1])
-    #Добовляе сам рецепт
-    user = AdvUser.objects.get(id=request.user.id)
-    name = request.POST.get('name')
-    public = request.POST.get('public')
-    if public == "on":
-        public = True
-    else:
-        public = False
-    url_video = get_good_url_video()
-    meal_type = request.POST.get('meal')
-    text = request.POST.get('text')
-    image = request.FILES['image']
-    one_recipe = Recipe(name = name, user = user,
-                        public = public, url_video = url_video,
-                        text = text, meal_type = meal_type,
-                        image = image,
+    if not request.user.is_authenticated:
+        return redirect("/error.html")
+
+    check = services.checking_data_registration(request)
+    check_recip_recult = check.recipe_check() #возврощает old_result error как словарь
+
+    if len(check_recip_recult.get('error')) != 0:
+        old_ingredients = check.check_ingredients_for_error() #словарь
+        context = {
+            'title': 'Добавить рецепт',
+            'meal': ['Завтрак', 'Обед', 'Ужин', 'Напиток', 'Десерт'],
+        }
+
+        return render(request, "main/add_recipe.html",{**context, **old_ingredients, **check_recip_recult} )
+
+    registration = services.data_normalization_during_registration(request)
+    #добовляем сам рецепт
+    one_recipe = Recipe(name = registration.name(), user = registration.user(),
+                        public = registration.public(), url_video = registration.url_video(),
+                        text = registration.text(), meal_type = registration.meal_type(),
+                        image = registration.image(),complexity = registration.complexity(),
+                        cooking_time = registration.cooking_time(),
                         )
     one_recipe.save()
-    # добавляем типизацию
-    complexity = request.POST.get('complexity')
-    def get_minutes():
-        time_hour = int(request.POST.get('time_hour'))
-        time_hour = int(request.POST.get('time_minutes'))
-        return time_hour * time_hour
-    one_recipe_Typing = Typing(recipe_id = one_recipe,complexity = complexity, cooking_time = get_minutes() )
-    one_recipe_Typing.save()
+    # добоаляем ингридиенты
+    registration.add_ingredients(one_recipe)
+
     return redirect("/recipe/" + str(one_recipe.id))
+
+
+def error(request):
+    return render(request, "main/error.html")

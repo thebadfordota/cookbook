@@ -5,20 +5,20 @@
 {% block content %}
 <h1>{{ heading }}</h1>
 <div class="main_welcom">
-        <div class="main_about">
-            <form method="post" class="box">
-                {% csrf_token %}
-                    <div class="about_left">
-                        <input type="hidden" name="form_type" value="form_1">
-                        {{ form.selection_field }}
-                    </div>
-                    <div class="about_right">
-                        <div class="mb-3">
-                            <button type="submit" class="btn btn-success" name="">Принять</button>
+                <form method="post" class="box" style="margin: auto;">
+                    <div class="main_center">
+                    {% csrf_token %}
+                        <div class="img_left">
+                            <input type="hidden" name="form_type" value="form_1">
+                            {{ form.selection_meal }}
+                        </div>
+                        <div class="text_right">
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-success" name="">Принять</button>
+                            </div>
                         </div>
                     </div>
-            </form>
-        </div>
+                </form>
 
     <div class="main_welcom">
         {% for el in all_recipe %}
@@ -38,12 +38,8 @@
                     <div class="col-md-8">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">{{ el.meal_type }}</li>
-                            {% for curr_type in all_typing %}
-                                {% if curr_type.recipe_id == el %}
-                                    <li class="list-group-item">Сложность приготовления: {{ curr_type.complexity }}</li>
-                                    <li class="list-group-item">Время приготовления: {{ curr_type.cooking_time }}</li>
-                                {% endif %}
-                            {% endfor %}
+                                    <li class="list-group-item">Сложность приготовления: {{ el.complexity }}</li>
+                                    <li class="list-group-item">Время приготовления: {{ el.cooking_time }}</li>
                             {% for curr_rate in all_rating %}
                                 {% if curr_rate.recipe_id == el %}
                                     {% if curr_rate.rating == None %}
@@ -62,6 +58,14 @@
             </div>
         </div>
         {% endfor %}
+    </div>
+    <div class="main_center">
+        <div class="img_left">
+            <img src='{% static "main/images/new_logo.png" %}'>
+        </div>
+        <div class="text_right">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus deleniti dignissimos incidunt molestiae voluptatibus! A, accusamus aut dolor enim facilis perspiciatis quam quasi, quia soluta tempora temporibus voluptatum. Doloremque earum eos error et impedit incidunt iure, laudantium, nemo numquam repudiandae tempora tenetur?</p>
+        </div>
     </div>
 </div>
 {% endblock %}

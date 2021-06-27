@@ -177,6 +177,24 @@ img:hover {
     margin: auto 0;
 }
 
+.text_left {
+    margin-right: 130px;
+    padding: 25px 0;
+}
+
+.text_center {}
+
+.text_right {
+    margin-left: 130px;
+    padding: 25px 0;
+}
+
+.main_center {
+    padding: 25px 0;
+    margin: 0 auto;
+    display: flex;
+}
+
 
         /* Form */
 

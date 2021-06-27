@@ -2,6 +2,7 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block script %}
+    id = {{id_recipe}};
     ingredients = [
 {% for a in ingredients %}
    [ ['{{ a.name }}'],['{{ a.value }}']],
@@ -12,7 +13,7 @@
         var count = document.getElementById("count_ingredients").value;
         var table = "<thead>"+
             "<tr>"+
-                "<th >Название ингредиента</th>" +
+                "<th >Название ингридиенты</th>" +
                 "<th>вес в граммах</th>"+
             "</tr>"+
         "</thead>";
@@ -50,46 +51,78 @@
     }
     function add_coment(url){
       text_coment = document.getElementById("text_new_coment").value;
-      $.ajax({
-      url: url,
-      type: 'POST',
-      data: {'text_coment':text_coment
-      },
-      success: function (data) {
-          var coment_html = document.getElementById("all_coment").innerHTML;
-          document.getElementById("all_coment").innerHTML = data + coment_html;
+      if (text_coment != ""){
+        $.ajax({
+        url: url,
+        type: 'POST',
+        data: {'text_coment':text_coment
+        },
+        success: function (data) {
+            var coment_html = document.getElementById("all_coment").innerHTML;
+            document.getElementById("all_coment").innerHTML = data + coment_html;
+            document.getElementById("text_new_coment").value = "";
+        }
+      });
+    }else{
+      alert("Вы ввели пустое значение! ");
+    }
 
-      }
-    });
+
+
     }
     /*
       1 - кнопка
       2 - поле для ввода
 
     */
-    function step_1_edit_coment(input_botton, input_text, url_updata){
-             document.getElementById(input_botton).innerHTML = "<input type=\"button\" value = \"Сохранить\" onclick=\"step_2_edit_coment('"+input_botton+"','"+input_text+"', '"+url_updata+"' )\">" ;
+    function step_1_edit_coment(input_botton, input_text, url_updata, comment_id){
+             document.getElementById(input_botton).innerHTML = "<input type=\"button\" value = \"Сохранить\" onclick=\"step_2_edit_coment('"+input_botton+"','"+input_text+"', '"+url_updata+"' , '"+comment_id+"' )\">" ;
              var old_coment = document.getElementById(input_text).innerHTML;
              document.getElementById(input_text).innerHTML = "<input type=\"text\" value = \""+old_coment+"\" id = \""+input_text+"T\">" ;
         // "<input type=\"button\" value = \"Сохранить\" onclick=\"step_2_edit_coment()\">" ;
     }
-    function step_2_edit_coment(input_botton, input_text, url_updata){
+    function step_2_edit_coment(input_botton, input_text, url_updata, comment_id){
        document.getElementById(input_botton).innerHTML = "<input type=\"button\" value = \"Редактировать\" onclick=\"step_1_edit_coment('"+input_botton+"','"+input_text+"', '"+url_updata+"' )\">" ;
        var new_coment = document.getElementById(input_text+"T").value;
        document.getElementById(input_text).innerHTML = new_coment ;
-         $.ajax({
-        url: url_updata,
-        type: 'POST',
-        data: {'coment':new_coment
-        },
-        success: function (data) {
 
-        }
-        });
+       $.ajax({
+                   url: url_updata,
+                   type: 'POST',
+                   data: { },
+                   success: function(data) {
+                     document.getElementById(comment_id).style.animationName = "trans";
+                    document.getElementById(comment_id).style.animationDuration = "0.5s";
+                    document.getElementById(comment_id).style.animationTimingFunction = "0.5s";
+                    document.getElementById(comment_id).style.animationIterationCount = "1";
+                    document.getElementById(comment_id).style.animationPlayState = "running";
+                    document.getElementById(comment_id).style.animationFillMode = "forwards";
+
+                    setTimeout(delete_coment_display_none, 500, comment_id);
+                    setTimeout(add_update_coment, 550, 'add_coment/'+id, new_coment);
+                   }
+      });
     }
+    function add_update_coment(url, text_coment){
+      let result_RegExp = text_coment.match(/.{1,100}/g);
+        if (result_RegExp.length != 0){
+          $.ajax({
+          url: url,
+          type: 'POST',
+          data: {'text_coment':text_coment
+          },
+          success: function (data) {
+              var coment_html = document.getElementById("all_coment").innerHTML;
+              document.getElementById("all_coment").innerHTML = data + coment_html;
+              }
+        });
+      }
+    }
+
+
 {% endblock %}
 {% block content %}
-{% if error == 'zero' %}
+
 {% if user.is_authenticated %}
     {% if favorite_status.user.id == user.id %}
     <a href = "delete_favorite/{{ id_recipe }}">
@@ -105,23 +138,23 @@
 <h1>{{ heading }}</h1>
 <p>Автор {{ autor }}<br/>
 
-   Сложность {% if typing.complexity == 1 %}
+   Сложность: {% if complexity == 1 %}
                 очень легко
             {% endif %}
-            {% if typing.complexity == 2 %}
+            {% if complexity == 2 %}
                 легко
             {% endif %}
-            {% if typing.complexity == 3 %}
+            {% if complexity == 3 %}
                 среднее
             {% endif %}
-            {% if typing.complexity == 4 %}
+            {% if complexity == 4 %}
                 сложно
             {% endif %}
-            {% if typing.complexity == 5 %}
+            {% if complexity == 5 %}
                 очень сложно
             {% endif %}
      <br/>
-   Время готовки {{ hours }} : {{ minutes }} <br/>
+   Время готовки {{ hours }}:{{ minutes }} мин <br/>
    Тип: {{ meal }}
 </p>
 <p>
@@ -187,16 +220,18 @@
     </p>
      {% endif %}
     <!-- Форма для ввода -->
-    <div>
-        <h3 align = "center">Добавить коментарий</h3>
-        <form action="#" method = "get">
-            Текст коментария
-            <input type="text" id="text_new_coment"><br/><br/>
-            <input type="button" value = "Добавить коментарий" onclick = "add_coment('add_coment/{{ id_recipe}}')">
+    {% if user.is_authenticated %}
+        <div>
+            <h3 align = "center">Добавить коментарий</h3>
+            <form action="#" method = "get">
+                Текст коментария
+                <input type="text" id="text_new_coment"><br/><br/>
+                <input type="button" value = "Добавить коментарий" onclick = "add_coment('add_coment/{{ id_recipe}}')">
 
 
-        </form>
-    </div>
+            </form>
+        </div>
+    {% endif %}
     <h2 align = "center">Коментарии</h2>
     <div id = "all_coment">
     {% for a in comments %}
@@ -207,9 +242,9 @@
             Сам текст: <samp id = "coment_edit_text{{ a.id }}">{{ a.text }}</samp> <br/>
             {% if a.user.id == user.id %}
 
-                <input type="submit" value = "Удалить" onclick="delete_coment('delete_coment/{{ a.id }}/{{ id_recipe }}','coment{{ a.id }}' )">
+                <input type="submit" value = "Удалить" onclick="delete_coment('delete_coment/{{ a.id }}/{{ id_recipe }}','coment{{ a.id }}')">
                 <samp id = "coment_edit_botton{{ a.id }}" >
-                    <input type="button" value = "Редактировать" onclick="step_1_edit_coment('coment_edit_botton{{ a.id }}','coment_edit_text{{ a.id }}', 'updata_coment/{{ a.id }}/{{ id_recipe }}')"> <br/>
+                    <input type="button" value = "Редактировать" onclick="step_1_edit_coment('coment_edit_botton{{ a.id }}','coment_edit_text{{ a.id }}', 'delete_coment/{{ a.id }}/{{ id_recipe }}','coment{{ a.id }}')"> <br/>
                 </samp>
 
             {% endif %}
@@ -218,9 +253,7 @@
     {% endfor %}
     </div>
 </div>
-{% else %}
-    <h1>{{ error }}</h1>
-{% endif %}
+
 
 {% endblock %}
 

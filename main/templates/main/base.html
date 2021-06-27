@@ -27,42 +27,40 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto justify-content-end">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Все рецепты</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'add_recipe' %}">Добавить рецепт</a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="fas fa-user"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Рецепты</a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_recipe' %}">Добавить рецепт</a>
+                </li>
+                {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     {% if not user.is_authenticated %}
-                            <a class="dropdown-item" href="{% url 'accounts:login' %}">Войти</a>
-                     <a class="dropdown-item" href="{% url 'accounts:register' %}">Зарегистрироваться</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'accounts:password_reset' %}">Сбросить пароль</a>
+                        <a class="dropdown-item" href="{% url 'accounts:login' %}">Войти</a>
+                        <a class="dropdown-item" href="{% url 'accounts:register' %}">Зарегистрироваться</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'accounts:password_reset' %}">Сбросить пароль</a>
                     {% endif %}
 
                     {% if user.is_authenticated %}
-                     <a class="dropdown-item" href="{% url 'accounts:profile' %}">Профиль</a>
+                    <a class="dropdown-item" href="{% url 'accounts:profile' %}">Профиль</a>
                     <a class="dropdown-item" href="{% url 'accounts:profile_change' %}">Изменить профиль</a>
                     <a class="dropdown-item" href="{% url 'accounts:password_change' %}">Изменить пароль</a>
-                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'accounts:logout' %}">Выйти</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'accounts:logout' %}">Выйти</a>
                     {% endif %}
-                        </div>
-                      </li>
+                    </div>
+                </li>
             </ul>
           </div>
         </nav>
     </header>
-
     {% block content %}{% endblock %}
-
     <div class="footer">
         <p class="copyright" style="margin-bottom: 0; text-align: center;">&copy; UW1</p>
         <p>Техподдержка: supp0rtuw1.006@mail.ru</p>

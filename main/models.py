@@ -27,6 +27,15 @@ class Recipe(BaseModel):
     image = models.ImageField(null=True)
     meal_type = models.CharField(max_length=50, choices=MEAL_CHOICES, default='завтрак',
                                  verbose_name="Название трапезы")
+    complexity = models.IntegerField(
+        verbose_name="Сложность приговления блюда",
+        default=1,
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ]
+    )
+    cooking_time = models.IntegerField(verbose_name="Время приготовления в секундах")
 
     class Meta:
         verbose_name_plural = 'рецепты'
@@ -81,27 +90,6 @@ class FavoriteDishes(BaseModel):
     class Meta:
         verbose_name_plural = 'любимые блюда'
         verbose_name = 'Любимые блюдо'
-
-    def __str__(self):
-        return str(self.recipe_id)
-
-
-class Typing(BaseModel):
-    recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name="ID блюда", null=True)
-    complexity = models.IntegerField(
-        verbose_name="Сложность приговления блюда",
-        default=1,
-        validators=[
-            MaxValueValidator(5),
-            MinValueValidator(1)
-        ]
-    )
-    cooking_time = models.IntegerField(verbose_name="Время приготовления в секундах")
-
-    class Meta:
-        verbose_name_plural = 'типизации'
-        verbose_name = 'типизация'
-        ordering = ['-recipe_id']
 
     def __str__(self):
         return str(self.recipe_id)

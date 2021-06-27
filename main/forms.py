@@ -19,9 +19,16 @@ class FilteringRecipes(forms.Form):
         ('Десерт', 'Десерт'),
         ('Все категории', 'Все категории'),
     )
+    COMPLEXITY_CHOICES = (
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5'),
+    )
     # selection_field = forms.ChoiceField(choices=((1, "English"), (2, "German"), (3, "French")))
 
-    selection_field = forms.ChoiceField(
+    selection_meal = forms.ChoiceField(
         choices=MEAL_CHOICES,
         required=False,
         initial='Все категории'

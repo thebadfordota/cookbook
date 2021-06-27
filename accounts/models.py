@@ -10,6 +10,7 @@ class AdvUser(AbstractUser):
     patronymic = models.CharField(max_length=50, null=True,  verbose_name="Отчество")
     is_activated = models.BooleanField(default=True)
     send_messages = models.BooleanField(default=True, verbose_name='Слать оповещения о новых комментариях?')
+    image = models.ImageField(null=True, blank=True)
 
     class Meta(AbstractUser.Meta):
         verbose_name = "Улучшенный пользователь"

@@ -5,10 +5,13 @@
         Сам текст:<samp id = "coment_edit_text{{ coment.id }}">  {{ coment.text }} </samp> <br/>
         {% if coment.user.id == user.id %}
 
+
             <input type="submit" value = "Удалить" onclick="delete_coment('delete_coment/{{ coment.id }}/{{ id_recipe }}','coment{{ coment.id }}' )">
             <samp id = "coment_edit_botton{{ coment.id }}" >
-            <input type="button" value = "Редактировать" onclick="step_1_edit_coment('coment_edit_botton{{ coment.id }}','coment_edit_text{{ coment.id }}', 'updata_coment/{{ coment.id }}/{{ id_recipe }}')" > <br/>
+            <input type="button" value = "Редактировать" onclick="step_1_edit_coment('coment_edit_botton{{ coment.id }}','coment_edit_text{{ coment.id }}', 'delete_coment/{{ coment.id }}/{{ id_recipe }}','coment{{ coment.id }}')"> <br/>
             </samp>
+
+
         {% endif %}
     </p>
   </div>
