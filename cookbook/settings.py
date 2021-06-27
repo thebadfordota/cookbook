@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-dlv&#&aea1$-gfigyt37ng)$0q5@0pamn)c+wuz^i$-ci-^-o^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['cookbook-simbirsoft.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -132,7 +132,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
 EMAIL_HOST_USER = 'supp0rtuw1.006@mail.ru'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_PASSWORD = 'teamuw1006'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'CookBook team <supp0rtuw1.006@mail.ru>'
