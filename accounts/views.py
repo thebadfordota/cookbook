@@ -13,11 +13,15 @@ from .forms import ChangeUserinfoForm, RegisterUserForm
 from .utilities import signer
 
 
-
-
 @login_required
 def profile(request):
-    return render(request, 'accounts/profile.html')
+    user_info = AdvUser.objects.order_by('id')
+    context = {
+        'title': 'Профиль  пользователя',
+        'heading': 'Профиль  пользователя',
+        'user_info': user_info
+    }
+    return render(request, 'accounts/profile.html', context)
 
 
 class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView) :

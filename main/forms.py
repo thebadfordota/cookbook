@@ -25,6 +25,18 @@ class FilteringRecipes(forms.Form):
         ('3', '3'),
         ('4', '4'),
         ('5', '5'),
+        ('6', 'Любая сложность'),
+    )
+    COOKING_TIME_CHOICES = (
+        ('15', '15 минут'),
+        ('30', '30 минут'),
+        ('60', '1 час'),
+        ('120', '2 часа'),
+        ('240', '4 часа'),
+        ('360', '6 часов'),
+        ('480', '8 часов'),
+        ('600', '10 часов'),
+        ('9', 'Любое время'),
     )
     # selection_field = forms.ChoiceField(choices=((1, "English"), (2, "German"), (3, "French")))
 
@@ -32,6 +44,16 @@ class FilteringRecipes(forms.Form):
         choices=MEAL_CHOICES,
         required=False,
         initial='Все категории'
+    )
+    selection_complexity = forms.ChoiceField(
+        choices=COMPLEXITY_CHOICES,
+        required=False,
+        initial='6'
+    )
+    selection_cooking_time = forms.ChoiceField(
+        choices=COOKING_TIME_CHOICES,
+        required=False,
+        initial='9'
     )
 
 

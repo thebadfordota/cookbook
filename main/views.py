@@ -14,34 +14,35 @@ def get_range(value):
 
 def home_page(request):
     recipe_type = ''
+    complexity_type = ''
+    cooking_time_type = ''
     if request.method == 'POST':
         form = FilteringRecipes(request.POST)
         if form.is_valid():
-            if form.cleaned_data['selection_meal'] == 'Завтрак':
-                recipe_type = 'Завтрак'
-            elif form.cleaned_data['selection_meal'] == 'Обед':
-                recipe_type = 'Обед'
-            elif form.cleaned_data['selection_meal'] == 'Ужин':
-                recipe_type = 'Ужин'
-            elif form.cleaned_data['selection_meal'] == 'Напиток':
-                recipe_type = 'Напиток'
-            elif form.cleaned_data['selection_meal'] == 'Десерт':
-                recipe_type = 'Десерт'
+            if not form.cleaned_data['selection_meal'] == 'Все категории':
+                recipe_type = form.cleaned_data['selection_meal']
+            if not form.cleaned_data['selection_complexity'] == '6':
+                complexity_type = form.cleaned_data['selection_complexity']
+            if not form.cleaned_data['selection_cooking_time'] == '9':
+                cooking_time_type = form.cleaned_data['selection_cooking_time']
     else:
         form = FilteringRecipes()
     if recipe_type == '':
         all_recipe = Recipe.objects.order_by('id')
-        all_rating = Rating.objects.order_by('id')
         title = "Все рецепты"
     else:
         all_recipe = Recipe.objects.filter(meal_type=recipe_type)
-        all_rating = Rating.objects.order_by('id')
         if recipe_type == 'Ужин' or recipe_type == 'Обед' or recipe_type == 'Десерт':
             title = "Все " + str(recipe_type) + "ы"
         elif recipe_type == 'Напиток':
             title = "Все Напитки"
         else:
             title = "Все " + str(recipe_type) + "и"
+    if not complexity_type == '':
+        all_recipe = all_recipe.filter(complexity=int(complexity_type))
+    if not cooking_time_type == '':
+        all_recipe = all_recipe.filter(cooking_time__lte=int(cooking_time_type))
+    all_rating = Rating.objects.order_by('id')
     context = {
         'info': "Выберите категорию для фильтрации поиска:",
         'title': title,

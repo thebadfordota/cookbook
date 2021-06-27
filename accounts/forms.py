@@ -3,6 +3,7 @@ from .models import AdvUser
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from .models import user_registrated
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class ChangeUserinfoForm(forms.ModelForm):
@@ -16,9 +17,11 @@ class ChangeUserinfoForm(forms.ModelForm):
 class RegisterUserForm(forms.ModelForm):
     email = forms.EmailField(required=True, label='Адрес электронной почты')
     password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput,
-                                help_text=password_validation.password_validators_help_text_html())
+                                help_text=password_validation.password_validators_help_text_html(),
+                                min_length=8)
     password2 = forms.CharField(label='Пароль повторно', widget=forms.PasswordInput,
-                                help_text='Повторите пороль')
+                                help_text='Повторите пороль',
+                                min_length=8)
 
     def clean_password1(self):
         password1 = self.cleaned_data['password1']
