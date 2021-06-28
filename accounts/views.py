@@ -19,7 +19,6 @@ def profile(request):
     context = {
         'title': 'Профиль  пользователя',
         'heading': 'Профиль  пользователя',
-        'user_info': user_info
     }
     return render(request, 'accounts/profile.html', context)
 

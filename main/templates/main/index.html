@@ -5,35 +5,35 @@
 {% block content %}
 <h1>{{ heading }}</h1>
 <div class="main_welcom">
-                <form method="post" class="box" style="margin: auto;">
-                    <div class="main_center">
-                    {% csrf_token %}
-                        <div class="form_left">
-                            <input type="hidden" name="form_type" value="form_1">
-                        </div>
-                        <div class="form_left">
-                            {{ form.selection_meal }}
-                        </div>
-                        <div class="form_left">
-                            {{ form.selection_complexity }}
-                        </div>
-                        <div class="form_left">
-                            {{ form.selection_cooking_time }}
-                        </div>
-                        <div class="text_right">
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-success" name="">Принять</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+    <form method="post" class="box" style="margin: auto;">
+        <div class="main_center">
+        {% csrf_token %}
+            <div class="form_left">
+                <input type="hidden" name="form_type" value="form_1">
+            </div>
+            <div class="form_left">
+                {{ form.selection_meal }}
+            </div>
+            <div class="form_left">
+                {{ form.selection_complexity }}
+            </div>
+            <div class="form_left">
+                {{ form.selection_cooking_time }}
+            </div>
+            <div class="text_right">
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-success" name="">Принять</button>
+                </div>
+            </div>
+        </div>
+    </form>
 
     <div class="main_welcome">
         {% for el in all_recipe %}
         <div class="container mt-5">
             <div class="card">
                 <div class="card-header">
-                    <h5><a href="{% url 'view_recipe' el.pk %}">{{ el.name }}</a></h5>
+                    <h5><a href="{% url 'view_recipe' el.pk %}" style="color: black;">{{ el.name }}</a></h5>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
@@ -44,7 +44,7 @@
                         </a>
                     </div>
                     <div class="col-md-8">
-                        <ul class="list-group list-group-flush" style="font-size: 17px;">
+                        <ul class="list-group list-group-flush" style="font-size: 18px;">
                             <li class="list-group-item">{{ el.meal_type }}</li>
                                     <li class="list-group-item">Сложность приготовления: {{ el.complexity }}</li>
                                     <li class="list-group-item">Время приготовления: {{ el.cooking_time }}</li>
@@ -58,7 +58,8 @@
                             {% endfor %}
                             <li class="list-group-item">Общий рейтинг:</li>
                         </ul>
-                        <button type="button" class="btn btn-primary" style="color: white; width: 110px; height: 50px;"
+                        <button type="button" class="btn btn-primary" style="color: white; width: 110px; height: 50px;
+margin-top: 20px;"
                            onclick="window.location.href='{% url 'view_recipe' el.pk %}'">Перейти</button >
                     </div>
                 </div>

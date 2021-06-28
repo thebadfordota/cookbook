@@ -3,7 +3,7 @@
 {% block content %}
 <div class="main_welcom">
     <h2> {{ heading }} {{ user.username }}</h2>
-    <div class="main_center" style="margin: auto;">
+    <div class="main_center" style="margin: auto; margin-top: 55px;">
         <div class="form_left" style="margin: auto; margin-top: 0; margin-right: 150px; ">
             {% if user.image.url %}
                 <img src='{{ user.image.url }}'

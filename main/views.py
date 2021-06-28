@@ -263,8 +263,8 @@ def add_page(request):
     if not request.user.is_authenticated:
         return redirect("/error.html")
     context = {
-        'title':'Добавить рецепт',
-        'meal':['Завтрак', 'Обед','Ужин','Напиток','Десерт'],
+        'title': 'Добавить рецепт',
+        'meal': ['Завтрак', 'Обед','Ужин','Напиток','Десерт'],
         'count_ingredients':0,
         'hours':0,
         'minutes':0,

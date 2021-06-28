@@ -22,14 +22,19 @@
 {% endblock %}
 {% block content %}
 <div class="main_welcom">
-    <h2 align = "center" >{{ heading }}</h2>
-    {% for a in error %}
-        {{a}}<br>
-    {% endfor %}
+    <h2 align = "center" > Добавить рецепт {{ heading }}</h2>
+            {% for a in error %}
+                {{a}}<br>
+            {% endfor %}
     <form action="{{ action }}" method = "POST" enctype="multipart/form-data" class="box" style="margin-top: 45px;">
         {% csrf_token %}
-        <input type="text" name = "name" value = "{{old_result.name}}"
-               placeholder="Название рецепта"><br><br>
+        <div class="main_center" style="margin: auto;">
+            <div class="form_left" style="margin: auto;">Название рецепта: </div>
+            <div class="text_right" style="margin: auto;">
+                <input type="text" name = "name" value = "{{old_result.name}}"
+               placeholder="Название рецепта">
+            </div>
+        </div><br>
         <div class="main_center" style="margin: auto;">
             <div class="form_left" style="margin: auto;">Загрузить картинку: </div>
             <div class="text_right" style="margin: auto;">
@@ -42,8 +47,13 @@
             <span class="check__box"></span>
             <span class="check__info">Сделать рецепт публичным</span><br><br>
          </label><br>
-        <input type="text" name = "url_video" value="{{  old_result.url_video }}"
-                placeholder="Ссылка на видео в youtube"> <br><br>
+        <div class="main_center" style="margin: auto;">
+            <div class="form_left" style="margin: auto;">Ссылка на видео в youtube: </div>
+            <div class="text_right" style="margin: auto;">
+                <input type="text" name = "url_video" value="{{  old_result.url_video }}"
+                placeholder="Ссылка на видео в youtube">
+            </div>
+        </div><br>
         <select name = "meal">
             {% for a in meal %}
                  {% if a == old_result.meal_type %}

@@ -3,6 +3,7 @@ from .views import *
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 app_name = 'accounts'
 
@@ -33,3 +34,5 @@ urlpatterns = [
          PasswordResetCompleteView.as_view(template_name='accounts/password_confirmed.html'),
          name='password_reset_camplete'),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
