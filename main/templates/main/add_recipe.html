@@ -22,7 +22,7 @@
 {% endblock %}
 {% block content %}
 <div class="main_welcom">
-    <h2 align = "center" > Добавить рецепт {{ heading }}</h2>
+    <h2 align = "center" > {{ title }} </h2>
             {% for a in error %}
                 {{a}}<br>
             {% endfor %}
@@ -145,7 +145,7 @@
                 </tbody>
         </table>
         <div class="mb-3">
-            <button type="submit" class="btn btn-success">Добавить</button>
+            <button type="submit" class="btn btn-success">{{ button_info }}</button>
         </div>
     </form>
 </div>

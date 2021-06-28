@@ -197,6 +197,7 @@ def edit_page(request, id_recipe):
     }
     context = {
         'title': 'Редактировать рецепт',
+        'button_info': 'Изменить',
         'meal': ['Завтрак', 'Обед', 'Ужин', 'Напиток', 'Десерт'],
         'old_result':old_result,
         'action': '/recipe/update_recipe/' + str(one_recipe.id),
@@ -264,6 +265,7 @@ def add_page(request):
         return redirect("/error.html")
     context = {
         'title': 'Добавить рецепт',
+        'button_info': 'Добавить',
         'meal': ['Завтрак', 'Обед','Ужин','Напиток','Десерт'],
         'count_ingredients':0,
         'hours':0,
