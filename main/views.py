@@ -266,10 +266,10 @@ def add_page(request):
     context = {
         'title': 'Добавить рецепт',
         'button_info': 'Добавить',
-        'meal': ['Завтрак', 'Обед','Ужин','Напиток','Десерт'],
-        'count_ingredients':0,
-        'hours':0,
-        'minutes':0,
+        'meal': ['Завтрак', 'Обед', 'Ужин', 'Напиток', 'Десерт'],
+        'count_ingredients': 0,
+        'hours': 0,
+        'minutes': 0,
         'action': '/recipe/add_ricipe',
 
     }
