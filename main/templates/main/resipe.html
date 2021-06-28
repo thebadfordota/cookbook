@@ -157,11 +157,53 @@
 
         <div class="text_right">
             {% if user.is_authenticated %}
-                {% for a in 6|get_range %}
-                    <a href="push_rating/{{ id_recipe }}/{{ a }}">
-                        <input type="button" value="{{ a }}">
-                    </a>
-                {% endfor %}
+            <form action="#" class="form form">
+                <div class="form_item">
+                        <div class="simple-rating">
+                            <div class="simple-rating__items">
+                                {% if rating.here_rating.rating == 5 %}
+                                    <input id="simple-rating__5" type="radio" class="simple-rating__item" checked name="simple-rating" value="5">
+                                    <label for="simple-rating__5" class="simple-rating__label"  onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/5';"></label>
+                                {% else %}
+                                    <input id="simple-rating__5" type="radio" class="simple-rating__item" name="simple-rating" value="5">
+                                    <label for="simple-rating__5" class="simple-rating__label"  onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/5';"></label>
+                                {% endif %}
+
+                                {% if rating.here_rating.rating == 4 %}
+                                    <input id="simple-rating__4" type="radio" class="simple-rating__item" checked name="simple-rating" value="4">
+                                    <label for="simple-rating__4" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/4';"></label>
+                                {% else %}
+                                    <input id="simple-rating__4" type="radio" class="simple-rating__item" name="simple-rating" value="4">
+                                    <label for="simple-rating__4" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/4';"></label>
+                                {% endif %}
+
+                                {% if rating.here_rating.rating == 3 %}
+                                    <input id="simple-rating__3" type="radio" class="simple-rating__item" checked name="simple-rating" value="3">
+                                    <label for="simple-rating__3" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/3';"></label>
+                                {% else %}
+                                    <input id="simple-rating__3" type="radio" class="simple-rating__item" name="simple-rating" value="3">
+                                    <label for="simple-rating__3" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/3';"></label>
+                                {% endif %}
+
+                                {% if rating.here_rating.rating == 2 %}
+                                    <input id="simple-rating__2" type="radio" class="simple-rating__item" checked name="simple-rating" value="2">
+                                    <label for="simple-rating__2" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/2';"></label>
+                                {% else %}
+                                    <input id="simple-rating__2" type="radio" class="simple-rating__item" name="simple-rating" value="2">
+                                    <label for="simple-rating__2" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/2';"></label>
+                                {% endif %}
+
+                                {% if rating.here_rating.rating == 1 %}
+                                    <input id="simple-rating__1" type="radio" class="simple-rating__item"checked name="simple-rating" value="1">
+                                    <label for="simple-rating__1" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/1';"></label>
+                                {% else %}
+                                    <input id="simple-rating__1" type="radio" class="simple-rating__item" name="simple-rating" value="1">
+                                    <label for="simple-rating__1" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/1';"></label>
+                                {% endif %}
+                            </div>
+                        </div>
+                </div>
+            </form>
             {% endif %}
         </div>
     </div>
