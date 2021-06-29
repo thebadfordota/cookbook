@@ -239,6 +239,7 @@ class data_normalization_during_registration:
 class get_one_recipe:
     request = None
     id_recipe = None
+
     def __init__(self, request, id_recipe):
         self.request = request
         self.id_recipe = id_recipe
@@ -248,6 +249,7 @@ class get_one_recipe:
             return 0
         else:
             return round(minutes/60)
+
     def get(self):
         def get_rating():
             rating = Rating.objects.filter(recipe_id=one_recipe)
@@ -297,11 +299,12 @@ class get_one_recipe:
             'user': self.request.user, #id пользоватля, который запрашивает страницу
             'complexity':one_recipe.complexity,
             'hours':self.rounding_up_hours(one_recipe.cooking_time),
-            'minutes':int(one_recipe.cooking_time)%60,
+            'minutes':int(one_recipe.cooking_time) % 60,
             'ingredients':ingredients,
             'favorite_status':favorite_status,
             'meal':str(one_recipe.meal_type),
             'rating':get_rating(),
             'recipe':one_recipe,
+            'complexity_range': range(one_recipe.complexity)
         }
         return render(self.request, "main/resipe.html", context)

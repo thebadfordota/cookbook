@@ -118,8 +118,6 @@
         });
       }
     }
-
-
 {% endblock %}
 {% block content %}
 <div class="main_welcom">
@@ -130,141 +128,152 @@
             </a>
         {% endif %}
     </h1>
-
-    <div class="main_center" style="margin: auto; margin-top: 30px;">
-        <div class="form_left" style="margin-right: 50px;">
-            <i class="fa fa-clock-o" aria-hidden="true"></i> {{ hours }}:{{ minutes }}
-        </div>
-        <div class="form_left" style="margin-right: -50px;">
-            {% if user.is_authenticated %}
-                {% if favorite_status.user.id == user.id %}
-                <a href = "delete_favorite/{{ id_recipe }}">
-                    <button type="button" class="btn btn-outline-warning"
-                            style=" width: 260px; height: 65px;">
-                        Удалить из избранного
-                    </button>
-                </a>
-                {% else %}
-                    <a href = "add_favorite/{{ id_recipe }}">
-                        <button type="button" class="btn btn-outline-warning"
-                            style=" width: 260px; height: 65px;">
-                        Добавить в избранное
-                        </button>
-                    </a>
+    <div class="recipe_info">
+        <div class="main_center">
+            <div class="form_left" style="margin: auto; margin-right: 150px; margin-top: 0; ">
+                {% if images != "" %}
+                     <img class="recipe_image" src="{{ images.url }}" alt="Картошка">
                 {% endif %}
-            {% endif %}
-        </div>
-
-        <div class="text_right">
-            {% if user.is_authenticated %}
-            <form action="#" class="form form">
-                <div class="form_item">
-                        <div class="simple-rating">
-                            <div class="simple-rating__items">
-                                {% if rating.here_rating.rating == 5 %}
-                                    <input id="simple-rating__5" type="radio" class="simple-rating__item" checked name="simple-rating" value="5">
-                                    <label for="simple-rating__5" class="simple-rating__label"  onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/5';"></label>
-                                {% else %}
-                                    <input id="simple-rating__5" type="radio" class="simple-rating__item" name="simple-rating" value="5">
-                                    <label for="simple-rating__5" class="simple-rating__label"  onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/5';"></label>
-                                {% endif %}
-
-                                {% if rating.here_rating.rating == 4 %}
-                                    <input id="simple-rating__4" type="radio" class="simple-rating__item" checked name="simple-rating" value="4">
-                                    <label for="simple-rating__4" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/4';"></label>
-                                {% else %}
-                                    <input id="simple-rating__4" type="radio" class="simple-rating__item" name="simple-rating" value="4">
-                                    <label for="simple-rating__4" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/4';"></label>
-                                {% endif %}
-
-                                {% if rating.here_rating.rating == 3 %}
-                                    <input id="simple-rating__3" type="radio" class="simple-rating__item" checked name="simple-rating" value="3">
-                                    <label for="simple-rating__3" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/3';"></label>
-                                {% else %}
-                                    <input id="simple-rating__3" type="radio" class="simple-rating__item" name="simple-rating" value="3">
-                                    <label for="simple-rating__3" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/3';"></label>
-                                {% endif %}
-
-                                {% if rating.here_rating.rating == 2 %}
-                                    <input id="simple-rating__2" type="radio" class="simple-rating__item" checked name="simple-rating" value="2">
-                                    <label for="simple-rating__2" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/2';"></label>
-                                {% else %}
-                                    <input id="simple-rating__2" type="radio" class="simple-rating__item" name="simple-rating" value="2">
-                                    <label for="simple-rating__2" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/2';"></label>
-                                {% endif %}
-
-                                {% if rating.here_rating.rating == 1 %}
-                                    <input id="simple-rating__1" type="radio" class="simple-rating__item"checked name="simple-rating" value="1">
-                                    <label for="simple-rating__1" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/1';"></label>
-                                {% else %}
-                                    <input id="simple-rating__1" type="radio" class="simple-rating__item" name="simple-rating" value="1">
-                                    <label for="simple-rating__1" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/1';"></label>
-                                {% endif %}
-                            </div>
-                        </div>
-                </div>
-            </form>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="main_center" style="margin: auto; margin-top: 55px;">
-        <div class="form_left" style="margin: auto; margin-right: 150px; margin-bottom: 40px; ">
-            {% if images != "" %}
-                 <img src="{{ images.url }}" alt="Картошка" width="380px" height="450px">
-            {% endif %}
-        </div>
-        <div class="text_right" style="margin: auto;">
-            <table class="table table-striped">
-                 <tbody>
-                 <tr style="display: none;"><td></td></tr>
-                {% if autor %}
-                    <tr><td>Автор</td> <td>{{ autor }}</td></tr>
-                {% else %}
-                    <tr><td>Автор</td> <td>Удалён</td></tr>
-                {% endif %}
-
-                {% if meal %}
-                <tr><td>Тип</td> <td> {{ meal }} </td></tr>
-                {% endif %}
-
-                {% if complexity %}
-                    <tr><td>Сложность</td> <td>{{ complexity }}</td></tr>
-                {% endif %}
-
-
-                {% if user.is_authenticated %}
-                    {% if rating.here_rating == "zero" %}
-                        <tr><td>Ваш рейтинг</td> <td> Нет оценки</td></tr>
+            </div>
+            <div class="text_right" style="margin: auto; padding: 0; margin-top: 0;">
+                <table class="table table-striped" style="text-align: center; margin-top: 0;">
+                     <tbody>
+                    {% if autor %}
+                        <tr><td>Автор</td> <td>{{ autor }}</td></tr>
                     {% else %}
-                           <tr><td>Ваш рейтинг</td> <td> {{ rating.here_rating.rating }} </td></tr>
+                        <tr><td>Автор</td> <td>Удалён</td></tr>
                     {% endif %}
-                {% endif %}
 
-                {% if rating.rating %}
-                    <tr><td>Общий рейтинг</td> <td>{{ rating.rating }} / 5</td></tr>
-                {% endif %}
+                    {% if meal %}
+                    <tr><td>Тип</td> <td> {{ meal }} </td></tr>
+                    {% endif %}
 
-                {% if rating.count %}
-                    <tr><td>Всего оценили</td> <td>{{ rating.count }}</td></tr>
-                {% endif %}
+                    {% if complexity %}
+                        <tr>
+                            <td style="vertical-align: middle">Сложность</td>
+                            <td>
+                                <form action="#" class="form form">
+                                    <div class="form_item">
+                                            {% for _ in complexity_range %}
+                                            <div class="complexity-rating">
+                                                <div class="complexity-rating__items">
+                                                    <input  type="radio" class="complexity-rating__item" name="complexity-rating" value="5">
+                                                    <label class="complexity-rating__label"></label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
 
-                {% if  recipe.user == user %}
-                    <tr>
-                        <td>
-                            <a href="/recipe/delete_recipe/{{ recipe.id }}">
-                                <button type="button" class="btn btn-danger"
-                                        style=" width: 180px; height: 55px;">Удалить рецепт
-                                </button>
-                            </a>
-                        </td>
-                    </tr>
-                {% endif %}
-                 </tbody>
-            </table>
+                    {% if hours or minutes %}
+                        <tr><td><i class="fa fa-clock-o" aria-hidden="true"></i></td> <td>{{ hours }}:{{ minutes }}</td></tr>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                            <tr>
+                                <td style="vertical-align: middle">Ваш рейтинг</td>
+                                <td>
+                                    {% if user.is_authenticated %}
+                                        <form action="#" class="form form">
+                                            <div class="form_item">
+                                                    <div class="simple-rating">
+                                                        <div class="simple-rating__items">
+                                                            {% if rating.here_rating.rating == 5 %}
+                                                                <input id="simple-rating__5" type="radio" class="simple-rating__item" checked name="simple-rating" value="5">
+                                                                <label for="simple-rating__5" class="simple-rating__label"  onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/5';"></label>
+                                                            {% else %}
+                                                                <input id="simple-rating__5" type="radio" class="simple-rating__item" name="simple-rating" value="5">
+                                                                <label for="simple-rating__5" class="simple-rating__label"  onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/5';"></label>
+                                                            {% endif %}
+
+                                                            {% if rating.here_rating.rating == 4 %}
+                                                                <input id="simple-rating__4" type="radio" class="simple-rating__item" checked name="simple-rating" value="4">
+                                                                <label for="simple-rating__4" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/4';"></label>
+                                                            {% else %}
+                                                                <input id="simple-rating__4" type="radio" class="simple-rating__item" name="simple-rating" value="4">
+                                                                <label for="simple-rating__4" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/4';"></label>
+                                                            {% endif %}
+
+                                                            {% if rating.here_rating.rating == 3 %}
+                                                                <input id="simple-rating__3" type="radio" class="simple-rating__item" checked name="simple-rating" value="3">
+                                                                <label for="simple-rating__3" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/3';"></label>
+                                                            {% else %}
+                                                                <input id="simple-rating__3" type="radio" class="simple-rating__item" name="simple-rating" value="3">
+                                                                <label for="simple-rating__3" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/3';"></label>
+                                                            {% endif %}
+
+                                                            {% if rating.here_rating.rating == 2 %}
+                                                                <input id="simple-rating__2" type="radio" class="simple-rating__item" checked name="simple-rating" value="2">
+                                                                <label for="simple-rating__2" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/2';"></label>
+                                                            {% else %}
+                                                                <input id="simple-rating__2" type="radio" class="simple-rating__item" name="simple-rating" value="2">
+                                                                <label for="simple-rating__2" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/2';"></label>
+                                                            {% endif %}
+
+                                                            {% if rating.here_rating.rating == 1 %}
+                                                                <input id="simple-rating__1" type="radio" class="simple-rating__item"checked name="simple-rating" value="1">
+                                                                <label for="simple-rating__1" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/1';"></label>
+                                                            {% else %}
+                                                                <input id="simple-rating__1" type="radio" class="simple-rating__item" name="simple-rating" value="1">
+                                                                <label for="simple-rating__1" class="simple-rating__label" onclick = "window.location.href = '/recipe/push_rating/{{id_recipe}}/1';"></label>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </form>
+                                        {% endif %}
+                                </td>
+                            </tr>
+                    {% endif %}
+
+                    {% if rating.rating %}
+                        <tr><td>Общий рейтинг</td> <td>{{ rating.rating }} / 5</td></tr>
+                    {% endif %}
+
+                    {% if rating.count %}
+                        <tr><td>Всего оценили</td> <td>{{ rating.count }}</td></tr>
+                    {% endif %}
+
+                    {% if  recipe.user == user %}
+                        <tr>
+                            <td>
+                                <a href="/recipe/delete_recipe/{{ recipe.id }}">
+                                    <button type="button" class="btn btn-danger"
+                                            style=" width: 180px; height: 55px;">Удалить рецепт
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                {% if user.is_authenticated %}
+                                    {% if favorite_status.user.id == user.id %}
+                                    <a href = "delete_favorite/{{ id_recipe }}">
+                                        <button type="button" class="btn btn-outline-warning"
+                                                style=" width: 260px; height: 55px;">
+                                            Удалить из избранного
+                                        </button>
+                                    </a>
+                                    {% else %}
+                                        <a href = "add_favorite/{{ id_recipe }}">
+                                            <button type="button" class="btn btn-outline-warning"
+                                                style=" width: 245px; height: 55px;">
+                                            Добавить в избранное
+                                            </button>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                     </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <div class="main_center" style="margin: auto;">
+    <h2 align="center" style="margin-top: 65px;">Инструкция</h2>
+    <div class="main_center" style="margin: auto; margin-top: 35px;">
             <div class="text_center" style="margin: auto;"> {{ text }}<br></div>
     </div><br>
     {% if video_url != "NULL"%}
@@ -307,7 +316,7 @@
         <!-- Форма для ввода -->
         {% if user.is_authenticated %}
             <div>
-                <h3 align = "center" style="margin-top: 40px;">Добавить комментарий</h3>
+                <h3 align = "center" style="margin-top: 60px;">Добавить комментарий</h3>
                 <form action="#" method = "get" class="box" style="margin: auto; margin-top: 60px;">
                     <input type="text" id="text_new_coment" placeholder="Текст комментария"><br><br>
                     <div class="mb-3" style="margin: auto;">
@@ -316,14 +325,14 @@
                                     class="btn btn-outline-success"
                                     onclick = "add_coment('add_coment/{{ id_recipe}}')"
                                     style="margin: auto; border-radius: 34px;">
-                                <i class="fa fa-plus-square" aria-hidden="true"></i>     Добавить коментарий
+                                <i class="fa fa-plus-square" aria-hidden="true"></i>     Добавить комментарий
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
         {% endif %}
-        <h2 align = "center">Комментарии</h2>
+        <h2 align = "center" style="margin-top: 65px;">Комментарии</h2>
         <div id = "all_coment" style="width: 800px; margin: auto;">
             {% for a in comments %}
                 <div id = "coment{{ a.id }}" style="width: 800px; height: auto;">
@@ -334,7 +343,7 @@
                                     <i class="fa fa-clock-o" aria-hidden="true"></i> {{ a.data_time }}
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-8" style="margin: auto;">
+                                    <div class="col-md-8" style="margin: auto; min-height: 100px;">
                                         <samp id = "coment_edit_text{{ a.id }}" style="width: 800px;" >{{ a.text }}</samp><br>
                                         {% if a.user.id == user.id %}
                                             <div class="box" style="width: auto;">

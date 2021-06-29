@@ -3,6 +3,7 @@ from .models import AdvUser
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from .models import user_registrated
+from django.forms import ModelForm, TextInput, NumberInput, EmailInput, PasswordInput, CheckboxInput, FileInput
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
@@ -11,7 +12,27 @@ class ChangeUserinfoForm(forms.ModelForm):
 
     class Meta:
         model = AdvUser
-        fields = ('username', 'email', 'first_name', 'patronymic', 'last_name' )
+        fields = ('username', 'email', 'first_name', 'patronymic', 'last_name', 'image')
+        widgets = {
+            "username": TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите логин'
+            }),
+            "email": EmailInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите электронную почту'
+            }),
+            "first_name": TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите ваше имя'
+            }),
+            "last_name": TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите вашу фамилию'
+            }),
+            "patronymic": TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите ваше отчество'
+            }),
+            "image": FileInput(attrs={
+                'class': 'form-control'
+            }),
+        }
 
 
 class RegisterUserForm(forms.ModelForm):
@@ -50,4 +71,28 @@ class RegisterUserForm(forms.ModelForm):
 
     class Meta:
         model = AdvUser
-        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'send_messages')
+        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'send_messages', 'image')
+
+        widgets = {
+            "username": TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите логин'
+            }),
+            "email": EmailInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите электронную почту'
+            }),
+            "password1": PasswordInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите пароль'
+            }),
+            "password2": PasswordInput(attrs={
+                'class': 'form-control', 'placeholder': 'Повторите пароль'
+            }),
+            "first_name": TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите ваше имя'
+            }),
+            "last_name": TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Введите вашу фамилию'
+            }),
+            "send_messages": CheckboxInput(attrs={
+                'class': 'check__input'
+            }),
+        }

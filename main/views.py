@@ -125,6 +125,7 @@ def delete_recipe(request, id_recipe):
         return redirect("/error.html")
     one_recipe.delete()
     return redirect("/")
+
 @csrf_exempt
 def edit_page(request, id_recipe):
 

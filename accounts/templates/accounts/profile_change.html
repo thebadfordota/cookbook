@@ -2,7 +2,7 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block content %}
-<h2>Регистрация нового пользователя</h2>
+<h2>Изменить профиль</h2>
 <form method="post" class="box">
     <div class="main_welcom">
         <div class="reg_form">
@@ -11,23 +11,16 @@
             {{ form.username }}
             <h2>Почта:</h2>
             {{ form.email }}
-            <h2>Пароль:</h2>
-            {{ form.password1 }}
-            <h2>Подтвердите пароль:</h2>
-            {{ form.password2 }}
             <h2>Имя:</h2>
             {{ form.first_name }}
             <h2>Фамилия:</h2>
             {{ form.last_name }}
-            <h2>Отправлять сообщения:</h2>
-            <label class="check option" style="min-width: auto; margin: auto; margin-top: 45px;">
-                {{ form.send_messages }}
-                <span class="check__box"></span>
-                <span class="check__info">Отправлять уведомления</span><br><br>
-            </label>
-            <br>
-            <h2 style="margin-top: 0;">Аватар:</h2>
-            {{ form.image }}
+            <h2>Отчество:</h2>
+            {{ form.patronymic }}
+            <h2>Аватар:</h2>
+            <div class="im_input" style="height: 150px;">
+                {{ form.image }}
+            </div>
         </div>
             <div class="mb-3" style="margin-top: 45px;">
             <button type="submit" class="btn btn-success">Зарегистрироваться</button>

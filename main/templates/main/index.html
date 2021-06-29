@@ -5,7 +5,7 @@
 {% block content %}
 <h1>{{ heading }}</h1>
 <div class="main_welcom">
-    <form method="post" class="box" style="margin: auto;">
+    <form method="post" class="box">
         <div class="main_center">
         {% csrf_token %}
             <div class="form_left">
@@ -40,11 +40,11 @@
                         <a href="{% url 'view_recipe' el.pk %}">
                             <img src='{{ el.image.url }}'
                                  class="img-fluid"
-                                 style="width: 570px; height: 320px;">
+                                 style="width: 570px; height: 97%;">
                         </a>
                     </div>
                     <div class="col-md-8">
-                        <ul class="list-group list-group-flush" style="font-size: 18px;">
+                        <ul class="list-group list-group-flush" style="font-size: 19px;">
                             <li class="list-group-item">{{ el.meal_type }}</li>
                                     <li class="list-group-item">Сложность приготовления: {{ el.complexity }}</li>
                                     <li class="list-group-item">Время приготовления: {{ el.cooking_time }}</li>
