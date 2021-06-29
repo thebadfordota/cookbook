@@ -2,30 +2,62 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block script %}
+
+
     id = {{id_recipe}};
     ingredients = [
 {% for a in ingredients %}
-   [ ['{{ a.name }}'],['{{ a.value }}']],
+   [ ['{{ a.name }}'],['{{ a.value }}'],['{{ a.units }}']],
 {% endfor %}
     ];
-    function test(){
-
-        var count = document.getElementById("count_ingredients").value;
-        var table = "<thead>"+
-            "<tr>"+
-                "<th >Название ингридиенты</th>" +
-                "<th>вес в граммах</th>"+
-            "</tr>"+
-        "</thead>";
-        for (var a = 0; a < ingredients.length; a++){
-            var count_value = parseInt(ingredients[a][1])*count ;
-             table += "<tbody >"+
-             "<td>"+ingredients[a][0]+"</td>"+
-             "<td>"+count_value.toString()+"</td>"+
-            " </tbody>";
+    function check_delete(url){
+      if (confirm("Вы действительно хотите удалить рецепт?")) {
+          window.location.href = url;
+      }
+    }
+    function counting_the_quantity(){
+        var  user_entered_number_of_servings = parseInt(document.getElementById("count_ingredients").value);
+        if (user_entered_number_of_servings <= 0){
+          user_entered_number_of_servings = 1
+          document.getElementById("count_ingredients").value = user_entered_number_of_servings;
 
         }
-        document.getElementById("main_div_ingredients").innerHTML = table;
+
+        if (user_entered_number_of_servings > 12){
+          user_entered_number_of_servings = 12
+          document.getElementById("count_ingredients").value = user_entered_number_of_servings;
+        }
+        if (user_entered_number_of_servings.toString() == "NaN"){
+          user_entered_number_of_servings = 1;
+        }
+
+        if (user_entered_number_of_servings > 0 && user_entered_number_of_servings <= 12){
+            var table = "<thead>"+
+                "<tr>"+
+                    "<th >Название ингридиенты</th>" +
+                    "<th>Кол-во</th>"+
+                    "<th>Еденицы измерения</th>"+
+                "</tr>"+
+            "</thead>";
+            for (var a = 0; a < ingredients.length; a++){
+              var value_ingredients = parseInt(ingredients[a][1]);
+              if (value_ingredients == -1){
+                table += "<tbody >"+
+                "<td>"+ingredients[a][0]+"</td>"+
+                "<td>-</td>"+
+                "<td>"+ingredients[a][2]+"</td>"+
+               " </tbody>";
+              }else{
+                var count_value = value_ingredients*user_entered_number_of_servings ;
+                 table += "<tbody >"+
+                 "<td>"+ingredients[a][0]+"</td>"+
+                 "<td>"+count_value.toString()+"</td>"+
+                 "<td>"+ingredients[a][2]+"</td>"+
+                " </tbody>";
+              }
+            }
+            document.getElementById("main_div_ingredients").innerHTML = table;
+        }
     }
     function delete_coment_display_none(comment_id){
       document.getElementById(comment_id).style.display = "none";
@@ -118,6 +150,8 @@
         });
       }
     }
+
+
 {% endblock %}
 {% block content %}
 <div class="main_welcom">
@@ -169,7 +203,12 @@
                     {% endif %}
 
                     {% if hours or minutes %}
-                        <tr><td><i class="fa fa-clock-o" aria-hidden="true"></i></td> <td>{{ hours }}:{{ minutes }}</td></tr>
+                        <tr>
+                            <td><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+                            <td>
+                                {% if hours <= 9 %}0{% endif %}{{ hours }}:{% if minutes <= 9 %}0{% endif %}{{ minutes }}
+                            </td>
+                        </tr>
                     {% endif %}
 
                     {% if user.is_authenticated %}
@@ -274,7 +313,7 @@
     </div>
     <h2 align="center" style="margin-top: 65px;">Инструкция</h2>
     <div class="main_center" style="margin: auto; margin-top: 35px;">
-            <div class="text_center" style="margin: auto;"> {{ text }}<br></div>
+            <div class="text_center" style="margin: auto;"> {{ text|safe }}<br></div>
     </div><br>
     {% if video_url != "NULL"%}
             <h2 align="center">Видеоинструкция</h2>
@@ -289,7 +328,7 @@
         <div class="main_center">
             <div class="form_left" style="margin: auto; margin-right: 50px;">Введите количество порций: </div>
             <div class="text_right" style="margin: auto;">
-                <input type="number" min = 1 max = 12 value = 1 size = 10 id="count_ingredients" onclick="test()">
+                <input type="number" min = 1 max = 12 value = 1 size = 10 id="count_ingredients" oninput="counting_the_quantity()">
             </div>
         </div>
     </div>
@@ -298,7 +337,8 @@
         <thead>
             <tr>
                 <th scope="col">Название</th>
-                <th scope="col">Вес в граммах</th>
+                <th scope="col">Кол-во</th>
+                <th scope="col">Еденицы измерения</th>
             </tr>
         </thead>
 
@@ -306,7 +346,13 @@
             <tbody>
             <tr>
                 <td>{{ a.name }}</td>
-                <td>{{ a.value }}</td>
+                <td>{% if a.value == -1 %}
+                    -
+                    {% else %}
+                       {{  a.value}}
+                    {% endif %}
+                </td>
+                <td>{{ a.units }}</td>
             </tr>
             </tbody>
         {% endfor%}

@@ -150,26 +150,30 @@ class checking_data_registration:
         for a in range(30):
             name = self.request.POST.get('N' + str(a))
             value = self.request.POST.get('V' + str(a))
+            units = self.request.POST.get('U' + str(a))
             id_name = 'N' + str(a)
             id_value = 'V' + str(a)
-            if name != "" and value != "":
+            id_units = 'U' + str(a)
+            if name != "" and units != "":
                 ingredients.append({'id_name':id_name,'name': name,
-                                    'id_value':id_value,'value': value})
+                                    'id_value':id_value,'value': value,
+                                    'id_units':id_units,'units': units})
                 len += 1
-
             else:
                 break
         if len == 0:
             self.error.append("Минимальное кол-во ингридентов одна ")
             ingredients.append({'id_name': 'N0', 'name': "",
-                                'id_value': 'V0', 'value': ""})
+                                'id_value': 'V0', 'value': "",
+                                'id_units':'U0','units': ""})
         else:
             len -= 1
         new_input = []
         for a in range(len+1, 30):
             new_input.append({'id_tr':"T" + str(a),
                               'id_name':'N' + str(a),
-                              'id_value':'V' + str(a)})
+                              'id_value':'V' + str(a),
+                              'id_units':'U' + str(a)})
 
         return {'len':len,
                 'ingredients':ingredients,
@@ -229,9 +233,16 @@ class data_normalization_during_registration:
     def add_ingredients(self,one_recipe):
         for a in range(30):
             name = self.request.POST.get('N' + str(a))
-            value = self.request.POST.get('V' + str(a))
-            if name != "" and value != "":
-                ingredients = Ingredients(recipe_id=one_recipe, name=name, value=value)
+
+            units = self.request.POST.get('U' + str(a))
+            if name != "" and units != "" :
+                ingredients = Ingredients(recipe_id=one_recipe, name=name, units=units)
+                try:
+                    value = int(self.request.POST.get('V' + str(a)))
+                    value = value + 1 - 1
+                    ingredients.value = value
+                except Exception:
+                    ingredients.value = -1
                 ingredients.save()
             else:
                 break
@@ -239,7 +250,6 @@ class data_normalization_during_registration:
 class get_one_recipe:
     request = None
     id_recipe = None
-
     def __init__(self, request, id_recipe):
         self.request = request
         self.id_recipe = id_recipe
@@ -249,7 +259,6 @@ class get_one_recipe:
             return 0
         else:
             return round(minutes/60)
-
     def get(self):
         def get_rating():
             rating = Rating.objects.filter(recipe_id=one_recipe)
@@ -291,7 +300,7 @@ class get_one_recipe:
             'autor':str(one_recipe.user.username),
             'heading': str(one_recipe.name),
             'title':  str(one_recipe.name),
-            'text':str(one_recipe.text).replace('',''),
+            'text':str(one_recipe.text).replace('\r\n',' <br>'),
             'video_url':str(one_recipe.url_video),
             'images':one_recipe.image,
             'comments':coment_recipe,
@@ -299,7 +308,7 @@ class get_one_recipe:
             'user': self.request.user, #id пользоватля, который запрашивает страницу
             'complexity':one_recipe.complexity,
             'hours':self.rounding_up_hours(one_recipe.cooking_time),
-            'minutes':int(one_recipe.cooking_time) % 60,
+            'minutes':int(one_recipe.cooking_time)%60,
             'ingredients':ingredients,
             'favorite_status':favorite_status,
             'meal':str(one_recipe.meal_type),
@@ -308,3 +317,38 @@ class get_one_recipe:
             'complexity_range': range(one_recipe.complexity)
         }
         return render(self.request, "main/resipe.html", context)
+
+def check_authenticated_recipe_user(request, id_recipe):
+    if not request.user.is_authenticated:
+        return redirect("/error.html")
+    try:
+        one_recipe = Recipe.objects.get(id=id_recipe)
+    except:
+        return redirect("/error.html")
+
+    if one_recipe.user != request.user:
+        return redirect("/error.html")
+
+    return None
+
+def check_authenticated_recipe(request, id_recipe):
+    if not request.user.is_authenticated:
+        return redirect("/error.html")
+    try:
+        one_recipe = Recipe.objects.get(id=id_recipe)
+    except:
+        return redirect("/error.html")
+
+    return None
+
+def delete_coment(request, id_coment):
+    if not request.user.is_authenticated:
+        return HttpResponse(status=401)
+    try:
+        one_coment = Comments.objects.get(id=id_coment)
+    except Exception:
+        return HttpResponse(status=400)
+
+    if request.user.id == one_coment.user.id:
+        one_coment.delete()
+    return HttpResponse(status=200)

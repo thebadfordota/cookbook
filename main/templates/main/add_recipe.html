@@ -1,7 +1,18 @@
 {% extends 'main/base.html' %}
 {% block title %} {{ title }} {% endblock %}
 {% block script %}
-
+    function check_zero_hours(){
+        hours = document.getElementById("hours_time").value
+        if (hours == 0){
+          document.getElementById("hours_time").value = "";
+        }
+    }
+    function check_zero_minutes(){
+      minutes = document.getElementById("minutes_time").value
+      if (minutes == 0){
+        document.getElementById("minutes_time").value = "";
+      }
+    }
     {% if count_ingredients == 0 %}
         count_ingredients = 0;
 
@@ -12,7 +23,7 @@
     function check_table(){
       tbody_table = document.getElementById("tbody_table_ingredients").innerHTML
       last_N = document.getElementById("N"+count_ingredients).value;
-      last_V = document.getElementById("V"+count_ingredients).value;
+      last_V = document.getElementById("U"+count_ingredients).value;
       if (last_N != "" && last_V != ""){
         count_ingredients += 1;
         document.getElementById("T"+count_ingredients).style.display = "table-row";
@@ -43,14 +54,15 @@
         </div><br>
         <label class="check option" style="min-width: auto; margin: auto;">
             <input class="check__input" type ="checkbox" name = "public"
-                   {{ old_result.public }}>
+                   {% if old_result.public == "True" %} checked {% endif %}>
             <span class="check__box"></span>
             <span class="check__info">Сделать рецепт публичным</span><br><br>
          </label><br>
         <div class="main_center" style="margin: auto;">
             <div class="form_left" style="margin: auto;">Ссылка на видео в youtube: </div>
             <div class="text_right" style="margin: auto;">
-                <input type="text" name = "url_video" value="{{  old_result.url_video }}"
+                <input type="text" name = "url_video"
+                       value="{% if old_result.url_video != 'NULL' %}{{  old_result.url_video }}{% endif %}"
                 placeholder="Ссылка на видео в youtube">
             </div>
         </div><br>
@@ -70,13 +82,13 @@
         <div class="main_center" style="margin: auto;">
             <div class="form_left" style="margin: auto;">Время приготовление (часы):</div>
             <div class="text_right" style="margin: auto;">
-                <input type="number" min = 0 max = 10 value = "{{ old_result.hours }}{{ hours }}" size = 10 name="time_hour" placeholder="Сколько часов занимает приготовление">
+                <input type="number"  id = "hours_time" min = 0 max = 10 value = "{{ old_result.hours }}{{ hours }}" size = 10 name="time_hour" placeholder="Сколько часов занимает приготовление" onclick="check_zero_hours()">
             </div>
         </div><br>
         <div class="main_center" style="margin: auto;">
             <div class="form_left" style="margin: auto;">Время приготовление (минуты):</div>
             <div class="text_right" style="margin: auto;">
-                <input type="number" min = 0 max = 59 value = "{{ old_result.minutes }}{{ minutes }}" size = 10 name="time_minutes">
+                <input type="number" id = "minutes_time" min = 0 max = 59 value = "{{ old_result.minutes }}{{ minutes }}" size = 10 name="time_minutes" onclick="check_zero_minutes()">
             </div>
         </div><br>
         <div class="main_center" style="margin: auto;">
@@ -116,31 +128,34 @@
             <thead>
                 <tr>
                     <th scope="col">Название</th>
-                    <th scope="col">Вес в граммах</th>
+                    <th scope="col">Кол-во</th>
+                     <th scope="col">Еденицы измерения</th>
                 </tr>
             </thead>
                 <tbody id = "tbody_table_ingredients" onclick="check_table()" >
-                {% if len >= 0 %}
-                    {% for a in ingredients %}
-                        <tr style = "margin: auto;">
-                            <!-- id_name, name,id_value, value -->
-                            <!-- name --> <td> <input type="input"   id = "{{ a.id_name }}" name = "{{ a.id_name }}" value = "{{ a.name}}" oninput="check_table()"></td>
-                            <!-- value --> <td><input type="number" min = 1   size = 10 id = "{{ a.id_value }}" name = "{{ a.id_value }}" value = "{{ a.value }}" oninput="check_table()"></td>
-                        </tr>
-                    {% endfor %}
+                    {% if len >= 0 %}
+                        {% for a in ingredients %}
+                            <tr style = "margin: auto;">
+                                <!-- id_name, name,id_value, value -->
+                                <!-- name --> <td> <input type="input"   id = "{{ a.id_name }}" name = "{{ a.id_name }}" value = "{{ a.name}}" oninput="check_table()"></td>
+                                <!-- value --> <td><input type="number" min = 1   size = 10 id = "{{ a.id_value }}" name = "{{ a.id_value }}" value = "{% if a.value != -1 %}{{ a.value }}{% endif %}" oninput="check_table()"></td>
+                                <!-- units --><td><input type="input"   id = "{{a.id_units}}" name = "{{a.id_units}}" value = "{{ a.units }}" oninput="check_table()"> </td>
+                            </tr>
+                        {% endfor %}
 
-                    {% for a in new_input %}
-                        <!-- ["T"+str(a), 'N'+str(a), 'V'+str(a)] -->
-                        <tr style = "display: none; margin: auto;" id = "{{a.id_tr}}">
-                            <td> <input type="input" id = "{{a.id_name}}" name = "{{a.id_name}}" oninput="check_table()"></td>
-                            <td> <input type="number" min = 1  size = 10 id = "{{a.id_value}}" name = "{{a.id_value}}" oninput="check_table()"></td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    {% for a in 30|get_range %}
-                        {# вывод всех полей для ввода ингридиентов #}
-                       {% include 'main/auxiliary templates/empty_ingredients.html' %}
-                    {% endfor %}
+                        {% for a in new_input %}
+                            <!-- ["T"+str(a), 'N'+str(a), 'V'+str(a)] -->
+                            <tr style = "display: none; margin: auto;" id = "{{a.id_tr}}">
+                                <td> <input type="input" id = "{{a.id_name}}" name = "{{a.id_name}}" oninput="check_table()"></td>
+                                <td> <input type="number" min = 1  size = 10 id = "{{a.id_value}}" name = "{{a.id_value}}" oninput="check_table()"></td>
+                                <td><input type="input"   id = "{{a.id_units}}" name = "{{a.id_units}}" value = "{{ a.units }}" oninput="check_table()"> </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        {% for a in 30|get_range %}
+                            {# вывод всех полей для ввода ингридиентов #}
+                           {% include 'main/auxiliary templates/empty_ingredients.html' %}
+                        {% endfor %}
                 {% endif %}
                 </tbody>
         </table>

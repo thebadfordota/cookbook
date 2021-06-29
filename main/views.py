@@ -60,15 +60,10 @@ def get_one_recipe(request, id_recipe):
     return get_one_recipe.get()
 
 def update_recipe(request, id_recipe):
-    if not request.user.is_authenticated:
-        return redirect("/error.html")
-    try:
-        one_recipe = Recipe.objects.get(id=id_recipe)
-    except:
-        return redirect("/error.html")
 
-    if one_recipe.user != request.user:
-        return redirect("/error.html")
+    if services.check_authenticated_recipe_user(request, id_recipe) != None:
+        return services.check_authenticated_recipe_user(request, id_recipe)
+    one_recipe = Recipe.objects.get(id=id_recipe)
 
     check = services.checking_data_registration(request)
     check_recip_recult = check.update_recipe_check() #возврощает old_result error как словарь
@@ -104,25 +99,20 @@ def update_recipe(request, id_recipe):
 
     one_recipe.save()
 
-    # добоаляем ингридиенты
+    # удаляем ингридиенты
     for a in Ingredients.objects.filter(recipe_id = one_recipe):
         buffer = Ingredients.objects.get(id = a.id)
         buffer.delete()
-
+    # добоаляем ингридиенты
     registration.add_ingredients(one_recipe)
 
     return redirect("/recipe/" + str(one_recipe.id))
 
 def delete_recipe(request, id_recipe):
-    if not request.user.is_authenticated:
-        return redirect("/error.html")
-    try:
-        one_recipe = Recipe.objects.get(id=id_recipe)
-    except:
-        return redirect("/error.html")
+    if services.check_authenticated_recipe_user(request, id_recipe) != None:
+        return services.check_authenticated_recipe_user(request, id_recipe)
+    one_recipe = Recipe.objects.get(id=id_recipe)
 
-    if one_recipe.user != request.user:
-        return redirect("/error.html")
     one_recipe.delete()
     return redirect("/")
 
@@ -136,11 +126,14 @@ def edit_page(request, id_recipe):
         for b in Ingredients.objects.filter(recipe_id = one_recipe):
             name = b.name
             value = b.value
+            units = b.units
             id_name = 'N' + str(len)
             id_value = 'V' + str(len)
+            id_units = 'U' + str(len)
             if name != "" and value != "":
                 ingredients.append({'id_name':id_name,'name': name,
-                                    'id_value':id_value,'value': value})
+                                    'id_value':id_value,'value': value,
+                                    'id_units':id_units,'units': units})
                 len += 1
 
             else:
@@ -152,7 +145,8 @@ def edit_page(request, id_recipe):
         for a in range(len+1, 30):
             new_input.append({'id_tr':"T" + str(a),
                               'id_name':'N' + str(a),
-                              'id_value':'V' + str(a)})
+                              'id_value':'V' + str(a),
+                              'id_units':'U' + str(a)})
 
         return {'len':len,
                 'ingredients':ingredients,
@@ -164,29 +158,14 @@ def edit_page(request, id_recipe):
         else:
             return round(minutes / 60)
 
-    if not request.user.is_authenticated:
-        return redirect("/error.html")
-    try:
-        one_recipe = Recipe.objects.get(id=id_recipe)
-    except:
-        return redirect("/error.html")
+    if services.check_authenticated_recipe_user(request, id_recipe) != None:
+        return services.check_authenticated_recipe_user(request, id_recipe)
 
-    if one_recipe.user != request.user:
-        return redirect("/error.html")
-
-    if one_recipe.public == True:
-        public = "checked"
-    else:
-        public = ""
-    if one_recipe.url_video == "NULL":
-        url_video = ""
-    else:
-        url_video = one_recipe.url_video
-
+    one_recipe = Recipe.objects.get(id=id_recipe)
     old_result = {
         'name':one_recipe.name,
-        'public':public,
-        'url_video':url_video,
+        'public':str(one_recipe.public),
+        'url_video':one_recipe.url_video,
         'meal_type':one_recipe.meal_type,
         'image':one_recipe.image,
         'text': one_recipe.text,
@@ -194,7 +173,6 @@ def edit_page(request, id_recipe):
         'minutes':int(one_recipe.cooking_time) % 60,
         'complexity':one_recipe.complexity,
         'count_ingredients': 0,
-
     }
     context = {
         'title': 'Редактировать рецепт',
@@ -207,55 +185,59 @@ def edit_page(request, id_recipe):
 
 @csrf_exempt
 def add_coment(request, id_recipe):
-    user = AdvUser.objects.get(id = request.user.id)
+    if services.check_authenticated_recipe(request, id_recipe) != None:
+        return services.check_authenticated_recipe(request, id_recipe)
+
     one_recipe = Recipe.objects.get(id=id_recipe)
     text = request.POST.get('text_coment')
-    coment = Comments(recipe_id = one_recipe,user = user,text = text )
+    coment = Comments(recipe_id = one_recipe,user = request.user,text = text )
     coment.save()
-    user = AdvUser.objects.get(id=request.user.id)
-    #Получаем его
+
     return render(request, "main/coment.html", {'coment':coment,
                                                 'id_recipe':id_recipe,
-                                                'user':user,
+                                                'user':request.user,
                                                 })
 
 
 @csrf_exempt
 def delete_coment(request, id_coment, id_recipe):
-    one_coment = Comments.objects.get(id = id_coment)
-    if request.user.id == one_coment.user.id:
-        one_coment.delete()
-    return HttpResponse(status = 200)
+    return services.delete_coment(request, id_coment)
+
 
 
 @csrf_exempt
 def add_favorite(request, id_recipe):
-    user = AdvUser.objects.get(id=request.user.id)
+    if services.check_authenticated_recipe(request, id_recipe) != None:
+        return services.check_authenticated_recipe(request, id_recipe)
+
     one_recipe = Recipe.objects.get(id=id_recipe)
-    favorite_recipe = FavoriteDishes(user = user, recipe_id = one_recipe )
+    favorite_recipe = FavoriteDishes(user = request.user.id, recipe_id = one_recipe )
     favorite_recipe.save()
     return redirect("/recipe/" + str(id_recipe))
 
 @csrf_exempt
 def delete_favorite(request, id_recipe):
-    user = AdvUser.objects.get(id=request.user.id)
+    if services.check_authenticated_recipe(request, id_recipe) != None:
+        return services.check_authenticated_recipe(request, id_recipe)
+
     one_recipe = Recipe.objects.get(id=id_recipe)
-    favorite_recipe = FavoriteDishes.objects.get(user = user, recipe_id = one_recipe )
+    favorite_recipe = FavoriteDishes.objects.get(user = request.user.id, recipe_id = one_recipe )
     favorite_recipe.delete()
     return redirect("/recipe/" + str(id_recipe))
 
 @csrf_exempt
 def push_rating(request, id_recipe, rating):
-    user = AdvUser.objects.get(id=request.user.id)
+    if services.check_authenticated_recipe(request, id_recipe) != None:
+        return services.check_authenticated_recipe(request, id_recipe)
     one_recipe = Recipe.objects.get(id=id_recipe)
-    # пробуем получить о обновить
+
     try:
-        buffer = Rating.objects.get(user=user, recipe_id = one_recipe)
+        buffer = Rating.objects.get(user=request.user, recipe_id = one_recipe)
         buffer.rating = str(rating)
         buffer.save()
 
     except Exception:
-        buffer = Rating(user=user, recipe_id=one_recipe, rating = str(rating))
+        buffer = Rating(user=request.user, recipe_id=one_recipe, rating = str(rating))
         buffer.save()
 
     return redirect("/recipe/" + str(id_recipe))
@@ -286,7 +268,6 @@ def add_ricipe(request):
     check_recip_recult = check.recipe_check() #возврощает old_result error как словарь
     old_ingredients = check.check_ingredients_for_error()  # словарь
     if len(check_recip_recult.get('error')) != 0:
-
         context = {
 
             'title': 'Добавить рецепт',

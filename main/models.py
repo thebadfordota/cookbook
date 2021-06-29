@@ -73,6 +73,7 @@ class Ingredients(BaseModel):
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name="ID блюда")
     name = models.CharField(max_length=200, verbose_name="Название ингредиента")
     value = models.IntegerField(verbose_name="Вес ингредиента в граммах")
+    units = models.CharField(max_length=200, verbose_name="Еденица измерения")
 
     class Meta:
         verbose_name_plural = 'ингредиенты'
