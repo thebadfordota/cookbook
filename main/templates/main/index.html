@@ -46,7 +46,7 @@
                     <div class="col-md-8">
                         <ul class="list-group list-group-flush" style="font-size: 19px;">
                             <li class="list-group-item">{{ el.meal_type }}</li>
-                                    <li class="list-group-item">Сложность приготовления: {{ el.complexity }}</li>
+                                    <li class="list-group-item">Сложность: {{ el.complexity }}</li>
                                     <li class="list-group-item">Время приготовления: {{ el.cooking_time }}</li>
                             {% for curr_rate in all_rating %}
                                 {% if curr_rate.recipe_id == el %}

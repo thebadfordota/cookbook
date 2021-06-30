@@ -55,6 +55,21 @@ def home_page(request):
     return render(request, "main/index.html", context)
 
 
+def view_chosen_recipes(request):
+    title = 'Избранные рецепты'
+    all_recipe = Recipe.objects.order_by('id')
+    all_rating = Rating.objects.order_by('id')
+
+    context = {
+        'info': "Выберите категорию для фильтрации поиска:",
+        'title': title,
+        'heading': title,
+        'all_recipe': all_recipe,
+        'all_rating': all_rating,
+    }
+    return render(request, "main/chosen_recipes.html", context)
+
+
 def get_one_recipe(request, id_recipe):
     get_one_recipe = services.get_one_recipe(request, id_recipe)
     return get_one_recipe.get()

@@ -227,6 +227,10 @@ textarea {
     margin-bottom: 35px;
 }
 
+.recipe_text p{
+
+}
+
 
         /* Form */
 
@@ -781,7 +785,7 @@ table {
         margin: auto !important;
     }
     textarea{
-        width: 500px;
+        width: 720px;
         height: 500px;
     }
 }

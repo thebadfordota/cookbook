@@ -1,0 +1,41 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+<h1>{{ heading }}</h1>
+<div class="main_welcom">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Название</th>
+          <th scope="col">Тип</th>
+          <th scope="col">Сложность</th>
+          <th scope="col"><i class="fa fa-clock-o" aria-hidden="true"></i></th>
+          <th scope="col">Ваш рейтинг</th>
+          <th scope="col">Общий рейтинг</th>
+      </thead>
+         <tbody>
+        {% for el in all_recipe %}
+        <tr>
+          <td>{{ el.name }}</td>
+          <td>{{ el.meal_type }}</td>
+          <td>{{ el.complexity }}</td>
+          <td>{{ el.taxi_companies }}</td>
+          <td>{{ el.cooking_time }}</td>
+          {% for curr_rate in all_rating %}
+            {% if curr_rate.recipe_id == el %}
+                <td>{{ curr_rate.rating }}</td>
+            {% endif %}
+            {% if not curr_rate.recipe_id in all_recipe and user == curr_rate.user %}
+                <td>Нет оценки</td>
+            {% endif %}
+          {% endfor %}
+          <td>...</td>
+        </tr>
+        {% endfor %}
+         </tbody>
+    </table>
+
+</div>
+{% endblock %}

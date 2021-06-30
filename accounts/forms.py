@@ -30,7 +30,7 @@ class ChangeUserinfoForm(forms.ModelForm):
                 'class': 'form-control', 'placeholder': 'Введите ваше отчество'
             }),
             "image": FileInput(attrs={
-                'class': 'form-control'
+                'class': 'form-control', 'style': 'height: 60px'
             }),
         }
 

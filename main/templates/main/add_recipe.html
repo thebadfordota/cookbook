@@ -76,7 +76,7 @@
             {% endfor %}
         </select> <br><br>
         <h4>Напишите инструкцию по приготовлению</h4>
-        <textarea cols = 80 maxlength = 4000 name = "text" rows = 15 wrap="hard" style="padding:10px;">
+        <textarea maxlength = 4000 name = "text" rows = 15  style="padding:10px;">
             {{old_result.text}}
         </textarea><br>
         <div class="main_center" style="margin: auto;">
@@ -128,8 +128,8 @@
             <thead>
                 <tr>
                     <th scope="col">Название</th>
-                    <th scope="col">Кол-во</th>
-                     <th scope="col">Еденицы измерения</th>
+                    <th scope="col">Количество</th>
+                     <th scope="col">Единицы измерения</th>
                 </tr>
             </thead>
                 <tbody id = "tbody_table_ingredients" onclick="check_table()" >
