@@ -141,7 +141,7 @@ def view_yours_recipe(request):
         'all_recipe': all_recipe,
         'all_rating': all_rating,
     }
-    return render(request, "main/your_recipes.html", context)
+    return render(request, "main/chosen_recipes.html", context)
 
 def get_one_recipe(request, id_recipe):
     get_one_recipe = services.get_one_recipe(request, id_recipe)

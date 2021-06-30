@@ -231,6 +231,31 @@ textarea {
 
 }
 
+.card_text{
+    vertical-align: middle;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 5px;
+}
+
+.chose_table{
+    width: 100%;
+
+    margin: 0 !important;
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+.chose_table th, .chose_table td{
+    text-align: center;
+    vertical-align: middle !important;
+    border: 3px solid gray;
+}
+
+.scroll_table{
+    max-width: 99vw;
+    overflow-x: auto;
+}
 
         /* Form */
 
@@ -384,7 +409,7 @@ table {
   transition: 0.5s;
   background-size: 200% auto;
   color: black;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  /*box-shadow: 0 0 10px rgba(0,0,0,0.5);*/
   border-radius: 10px;
   max-width:300px;
   height: 75px;
@@ -788,4 +813,5 @@ table {
         width: 720px;
         height: 500px;
     }
+
 }
