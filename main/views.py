@@ -6,17 +6,25 @@ from django.template.defaulttags import register
 from django.views.decorators.csrf import csrf_exempt
 from . import services
 from PIL import Image
+from django.core.paginator import Paginator
 
-
+#данный фильтр возврощает ноль
 @register.filter
 def get_range(value):
     return range(value)
+
+@register.filter
+def get_range_without_zero(value):
+    return range(1,value+1)
+
+
 
 
 def home_page(request):
     recipe_type = ''
     complexity_type = ''
     cooking_time_type = ''
+
     if request.method == 'POST':
         form = FilteringRecipes(request.POST)
         if form.is_valid():
@@ -44,16 +52,96 @@ def home_page(request):
     if not cooking_time_type == '':
         all_recipe = all_recipe.filter(cooking_time__lte=int(cooking_time_type))
     all_rating = Rating.objects.order_by('id')
+    # поиск по игридиентам
+    search_result =  services.search_in_main(request, all_recipe)
+    if search_result[0] != None:
+        all_recipe = search_result[0]
+        old_ingredients = search_result[1]
+    else:
+        old_ingredients = ""
+
+
+    #пагинация
+    paginations = Paginator(all_recipe, 4)
+    try:
+        request_page = int(request.GET.get('page'))
+        if request_page <= paginations.num_pages and (not request_page <= 0):
+            page = request_page
+        else:
+             0/0
+    except Exception:
+        page = 1
+    #конец пагинации
+
+    #Записываем время и рейтинг
+    for a in range(len(all_recipe)):
+        all_minutes = all_recipe[a].cooking_time
+        all_recipe[a].hours = services.rounding_up_hours(all_minutes)
+        all_recipe[a].minutes = int(all_minutes)%60
+        all_recipe[a].rating = services.get_rating(all_recipe[a], request.user)
+
+
+    context = {
+        'info': "Выберите категорию для фильтрации поиска:",
+        'title': title,
+        'heading': title,
+        'all_recipe':  paginations.page(page),
+        'all_rating': all_rating,
+        'form': form,
+        'paginations':paginations,
+        'old_ingredients':old_ingredients,
+    }
+    return render(request, "main/index.html", context)
+
+def view_chosen_recipes(request):
+    title = 'Избранные рецепты'
+    all_recipe = Recipe.objects.order_by('id')
+    all_rating = Rating.objects.order_by('id')
+    buffer = []
+    a = FavoriteDishes.objects.filter(user = request.user)
+    for a in range(len(all_recipe)):
+        try:
+            FavoriteDishes.objects.get(user = request.user, recipe_id = all_recipe[a])
+            all_recipe[a].hours = services.rounding_up_hours(all_recipe[a].cooking_time)
+            all_recipe[a].minutes = int(all_recipe[a].cooking_time) % 60
+            all_recipe[a].rating = services.get_rating(all_recipe[a], request.user)
+            buffer.append(all_recipe[a])
+        except Exception:
+            pass
+    all_recipe = buffer
     context = {
         'info': "Выберите категорию для фильтрации поиска:",
         'title': title,
         'heading': title,
         'all_recipe': all_recipe,
         'all_rating': all_rating,
-        'form': form,
     }
-    return render(request, "main/index.html", context)
+    return render(request, "main/chosen_recipes.html", context)
 
+def view_yours_recipe(request):
+    title = 'Свои рецепты'
+    all_recipe = Recipe.objects.order_by('id')
+    all_rating = Rating.objects.order_by('id')
+    buffer = []
+    a = FavoriteDishes.objects.filter(user = request.user)
+    for a in range(len(all_recipe)):
+        try:
+            if all_recipe[a].user == request.user:
+                all_recipe[a].hours = services.rounding_up_hours(all_recipe[a].cooking_time)
+                all_recipe[a].minutes = int(all_recipe[a].cooking_time) % 60
+                all_recipe[a].rating = services.get_rating(all_recipe[a], request.user)
+                buffer.append(all_recipe[a])
+        except Exception:
+            pass
+    all_recipe = buffer
+    context = {
+        'info': "Выберите категорию для фильтрации поиска:",
+        'title': title,
+        'heading': title,
+        'all_recipe': all_recipe,
+        'all_rating': all_rating,
+    }
+    return render(request, "main/your_recipes.html", context)
 
 def get_one_recipe(request, id_recipe):
     get_one_recipe = services.get_one_recipe(request, id_recipe)
@@ -71,7 +159,7 @@ def update_recipe(request, id_recipe):
     if len(check_recip_recult.get('error')) != 0:
          #словарь
         context = {
-
+            'button_info': 'Изменить',
             'title': 'Редактировать',
             'meal': ['Завтрак', 'Обед', 'Ужин', 'Напиток', 'Десерт'],
             'action':'/recipe/update_recipe/'+str(one_recipe.id),
@@ -211,7 +299,7 @@ def add_favorite(request, id_recipe):
         return services.check_authenticated_recipe(request, id_recipe)
 
     one_recipe = Recipe.objects.get(id=id_recipe)
-    favorite_recipe = FavoriteDishes(user = request.user.id, recipe_id = one_recipe )
+    favorite_recipe = FavoriteDishes(user = request.user, recipe_id = one_recipe )
     favorite_recipe.save()
     return redirect("/recipe/" + str(id_recipe))
 
@@ -269,7 +357,7 @@ def add_ricipe(request):
     old_ingredients = check.check_ingredients_for_error()  # словарь
     if len(check_recip_recult.get('error')) != 0:
         context = {
-
+            'button_info':'Добавить',
             'title': 'Добавить рецепт',
             'meal': ['Завтрак', 'Обед', 'Ужин', 'Напиток', 'Десерт'],
             'action':'/recipe/add_ricipe',

@@ -2,7 +2,11 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block script %}
-
+    function delete_recipe(url){
+      if (confirm("вы действительно хотите удалть рецепт?")) {
+          window.location.href = url;
+      }
+    }
 
     id = {{id_recipe}};
     ingredients = [
@@ -276,16 +280,22 @@
                         <tr><td>Всего оценили</td> <td>{{ rating.count }}</td></tr>
                     {% endif %}
 
-                    {% if  recipe.user == user %}
+
                         <tr>
+
                             <td>
-                                <a href="/recipe/delete_recipe/{{ recipe.id }}">
+                                {% if  recipe.user == user %}
+                                <a onclick="delete_recipe('/recipe/delete_recipe/{{ recipe.id }}')">
                                     <button type="button" class="btn btn-danger"
                                             style=" width: 180px; height: 55px;">Удалить рецепт
                                     </button>
                                 </a>
+                                {% endif %} 
                             </td>
+
                             <td>
+
+
                                 {% if user.is_authenticated %}
                                     {% if favorite_status.user.id == user.id %}
                                     <a href = "delete_favorite/{{ id_recipe }}">
@@ -305,16 +315,20 @@
                                 {% endif %}
                             </td>
                         </tr>
-                    {% endif %}
+
                      </tbody>
                 </table>
             </div>
         </div>
     </div>
     <h2 align="center" style="margin-top: 65px;">Инструкция</h2>
-    <div class="main_center" style="margin: auto; margin-top: 35px;">
-            <div class="text_center" style="margin: auto;"> {{ text|safe }}<br></div>
-    </div><br>
+     <div class="main_center" style="margin-top: 0; display: block;">
+        <div class="recipe_text" style="width: auto;">
+            <p style="width: 100%; text-align: justify !important; line-height: 2; white-space: normal;">
+            {{ text|safe }}</p><br></div>
+    </div>
+
+        <br>
     {% if video_url != "NULL"%}
             <h2 align="center">Видеоинструкция</h2>
             <p>

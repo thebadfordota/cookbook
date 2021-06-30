@@ -49,6 +49,7 @@
 
                     {% if user.is_authenticated %}
                     <a class="dropdown-item" href="{% url 'accounts:profile' %}">Профиль</a>
+                    <a class="dropdown-item" href="{% url 'chosen_recipes' %}">Избранное</a>
                     <a class="dropdown-item" href="{% url 'accounts:profile_change' %}">Изменить профиль</a>
                     <a class="dropdown-item" href="{% url 'accounts:password_change' %}">Изменить пароль</a>
                     <div class="dropdown-divider"></div>

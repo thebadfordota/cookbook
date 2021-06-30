@@ -1,11 +1,17 @@
 {% extends 'main/base.html' %}
 {% load static %}
 {% block title %} {{ title }} {% endblock %}
+{% block script %}
+    function switch_to_page(page_number){
+        document.getElementById("search_bar").action = "/?page="+page_number
+        document.getElementById("submit_send_search").click()
 
+    }
+{% endblock %}
 {% block content %}
 <h1>{{ heading }}</h1>
 <div class="main_welcom">
-    <form method="post" class="box">
+    <form method="post" class="box" id = "search_bar" >
         <div class="main_center">
         {% csrf_token %}
             <div class="form_left">
@@ -20,9 +26,10 @@
             <div class="form_left">
                 {{ form.selection_cooking_time }}
             </div>
+            <input type = "input" name = "ingredients" value="{{ old_ingredients }}">
             <div class="text_right">
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-success" name="">Принять</button>
+                    <button type="submit" class="btn btn-success" name=""  id = "submit_send_search">Принять</button>
                 </div>
             </div>
         </div>
@@ -46,8 +53,9 @@
                     <div class="col-md-8">
                         <ul class="list-group list-group-flush" style="font-size: 19px;">
                             <li class="list-group-item">{{ el.meal_type }}</li>
-                                    <li class="list-group-item">Сложность приготовления: {{ el.complexity }}</li>
-                                    <li class="list-group-item">Время приготовления: {{ el.cooking_time }}</li>
+                                    <li class="list-group-item">Сложность: {{ el.complexity }}</li>
+                                    <li class="list-group-item">Время приготовления:
+                                        {% if el.hours <= 9 %}0{% endif %}{{ el.hours }}:{% if el.minutes <= 9 %}0{% endif %}{{ el.minutes }}</li>
                             {% for curr_rate in all_rating %}
                                 {% if curr_rate.recipe_id == el %}
                                     <li class="list-group-item">Ваш рейтинг: {{ curr_rate.rating }}</li>
@@ -56,7 +64,7 @@
                                     <li class="list-group-item">Вы не оценили:</li>
                                 {% endif %}
                             {% endfor %}
-                            <li class="list-group-item">Общий рейтинг:</li>
+                            <li class="list-group-item">Общий рейтинг:{{ el.rating.rating }}</li>
                         </ul>
                         <button type="button" class="btn btn-primary" style="color: white; width: 110px; height: 50px;
 margin-top: 20px;"
@@ -68,4 +76,11 @@ margin-top: 20px;"
         {% endfor %}
     </div>
 </div>
+    <h2> Пагинация </h2>
+       <h3 align="center">
+        {% for a in paginations.num_pages|get_range_without_zero %}
+            <small onclick="switch_to_page({{ a }})">{{ a }}</small> |
+        {% endfor %}
+       </h3>
+
 {% endblock %}

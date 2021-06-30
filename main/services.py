@@ -15,7 +15,7 @@ class checking_data_registration:
         try:
             name = self.request.POST.get('name')
             name_count = re.findall(r"[А-яA-z]{1}", name)
-            if not (len(name_count) >= 3 and len(name_count) <=40) :
+            if not (len(name_count) >= 3 and len(name_count) <=130) :
                 #Вызаваем ошибку
                 1/0
             self.old_result['name'] = name
@@ -291,7 +291,7 @@ class get_one_recipe:
         ingredients = Ingredients.objects.filter(recipe_id = one_recipe)
         try:
             user = AdvUser.objects.get(id = self.request.user.id)
-            favorite_status = FavoriteDishes.objects.get(user = user, recipe_id = one_recipe)
+            favorite_status = FavoriteDishes.objects.get(user = self.request.user, recipe_id = one_recipe)
         except Exception:
             favorite_status = None
 
@@ -352,3 +352,61 @@ def delete_coment(request, id_coment):
     if request.user.id == one_coment.user.id:
         one_coment.delete()
     return HttpResponse(status=200)
+
+def search_in_main(request,all_recipe ):
+    try:
+        old_ingredients = ""
+        if request.method != 'POST':
+            0/0
+
+        ingredients_for_search = str(request.POST.get('ingredients')).lower()
+        if ingredients_for_search == "":
+            0 / 0
+        old_ingredients = ingredients_for_search
+        ingredients_for_search = ingredients_for_search.split(',')
+        for a in range(len(ingredients_for_search)):
+            ingredients_for_search[a] = ingredients_for_search[a].strip()
+
+        buffer = []
+        for a in all_recipe:
+            search_ok = True
+            ingredients_str = ""
+            for b in Ingredients.objects.filter(recipe_id = a):
+                ingredients_str += " " + b.name.lower()
+            for b in range(len(ingredients_for_search)):
+                if ingredients_str.find(ingredients_for_search[b]) == -1:
+                    search_ok = False
+            if search_ok == True:
+                buffer.append(a)
+        #конец поиска по ингрилиентам
+        return buffer, old_ingredients
+    except Exception:
+        return None, ""
+
+def rounding_up_hours(minutes):
+    if minutes < 60:
+       return 0
+    else:
+       return round(minutes/60)
+
+
+def get_rating(one_recipe, user):
+    rating = Rating.objects.filter(recipe_id=one_recipe)
+    count = 0
+    all = 0
+    for a in rating:
+        all += int(a.rating)
+        count += 1
+    try:
+        here_rating = Rating.objects.get(recipe_id=one_recipe, user=user)
+        here_rating =   here_rating.rating
+    except Exception:
+        here_rating = "0"
+    if count == 0:  # Это нужно чтобы он не поделил на ноль
+        return {'rating': 0,
+                'here_rating': here_rating,
+                }
+    else:
+        return {'rating': str(round(all / count, 2)),
+                'here_rating': here_rating,
+                }

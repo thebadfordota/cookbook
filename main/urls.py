@@ -8,6 +8,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     path('', views.home_page, name='home'),
     url(r'^recipe/([0-9]{1,5})', views.get_one_recipe, name="view_recipe"),
+    path('recipes/chosen', views.view_chosen_recipes, name='chosen_recipes'),
+    path('recipes/yours', views.view_yours_recipe, name='yours_recipe'),
     url(r'^recipe/add_coment/([0-9]{1,5})', views.add_coment),
     url(r'^recipe/delete_coment/([0-9]{1,5})/([0-9]{1,5})', views.delete_coment),
     url(r'^recipe/add_favorite/([0-9]{1,5})', views.add_favorite),
