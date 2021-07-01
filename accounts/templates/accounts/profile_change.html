@@ -7,17 +7,17 @@
     <div class="main_welcom">
         <div class="reg_form">
             {% csrf_token %}
-            <h2 style="margin-top: 25px;">Логин:</h2>
+            <h2 style="margin-top: 25px;">Логин</h2>
             {{ form.username }}
-            <h2>Почта:</h2>
+            <h2>Почта</h2>
             {{ form.email }}
-            <h2>Имя:</h2>
+            <h2>Имя</h2>
             {{ form.first_name }}
-            <h2>Фамилия:</h2>
+            <h2>Фамилия</h2>
             {{ form.last_name }}
-            <h2>Отчество:</h2>
+            <h2>Отчество</h2>
             {{ form.patronymic }}
-            <h2>Аватар:</h2>
+            <h2>Аватар</h2>
             <div class="im_input" style="height: 150px;">
                 {{ form.image }}
             </div>

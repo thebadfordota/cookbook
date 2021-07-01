@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.conf.urls import url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+
 urlpatterns = [
     path('', views.home_page, name='home'),
     url(r'^recipe/([0-9]{1,5})', views.get_one_recipe, name="view_recipe"),
@@ -21,6 +22,7 @@ urlpatterns = [
     url(r'^recipe/update_recipe/([0-9]{1,5})', views.update_recipe),
     url(r'^recipe/edit_page/([0-9]{1,5})', views.edit_page),
     url(r'^error', views.error),
+    url(r'^', views.error)
 ]
 
 urlpatterns += staticfiles_urlpatterns()

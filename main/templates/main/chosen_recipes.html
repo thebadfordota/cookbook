@@ -18,7 +18,7 @@
            <tbody>
           {% for el in all_recipe %}
           <tr>
-            <td>{{ el.name }}</td>
+              <td><a href="{% url 'view_recipe' el.pk %}">{{ el.name }}</a></td>
             <td>{{ el.meal_type }}</td>
             <td>
               <form action="#" class="form form">

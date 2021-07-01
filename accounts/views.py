@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.signing import BadSignature
 from django.contrib.auth.decorators import login_required
@@ -15,6 +15,8 @@ from .utilities import signer
 
 @login_required
 def profile(request):
+    if not request.user.is_authenticated:
+        return redirect("/error.html")
     user_info = AdvUser.objects.order_by('id')
     context = {
         'title': 'Профиль  пользователя',
@@ -31,7 +33,9 @@ class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView) :
     success_url = reverse_lazy('accounts:profile')
     success_message = 'Данные пользователя изменены'
 
-    def setup(self, request, *args, **kwargs) :
+    def setup(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect("/error.html")
         self.user_id = request.user.pk
         return super().setup(request, *args, **kwargs)
 

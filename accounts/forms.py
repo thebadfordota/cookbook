@@ -45,19 +45,20 @@ class RegisterUserForm(forms.ModelForm):
                                 min_length=8)
 
     def clean_password1(self):
-        password1 = self.cleaned_data['password1']
+        password1 = self.cleaned_data.get('password1', None)
         if password1:
             password_validation.validate_password(password1)
         return password1
 
     def clean(self):
-        super().clean()
-        password1 = self.cleaned_data['password1']
-        password2 = self.cleaned_data['password2']
+        super(RegisterUserForm, self).clean()
+        password1 = self.clean_password1()
+        password2 = self.cleaned_data.get('password2', None)
         if password1 and password2 and password1 != password2:
             errors = {'password2': ValidationError(
                 'Введенные пороли не совпадают', code='password_mismatch')}
             raise ValidationError(errors)
+        return self.cleaned_data
 
     def save(self, commit=True):
         user = super().save(commit=False)

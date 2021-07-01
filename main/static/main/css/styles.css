@@ -189,7 +189,7 @@ img:hover {
 .text_center {}
 
 .text_right {
-    margin-left: 130px;
+    margin-left: 0px !important;
     padding: 25px 0;
 }
 
@@ -213,6 +213,7 @@ textarea {
 }
 
 .recipe_info{
+    display: flex;
     font-size: 19px;
     margin: auto;
     margin-top: 55px;
@@ -795,7 +796,31 @@ table {
 }
 
 
-@media screen and (max-width: 715px) {
+@media screen and (max-width: 1085px) {
+    .recipe_info .main_center{
+        flex-direction: column;
+        margin: auto;
+    }
+    .recipe_info .main_center .text_right{
+        margin-top: 55px !important;
+    }
+    .main_center .form_left{
+       font-size: 19px;
+       margin: auto;
+    }
+    .box .main_center{
+        flex-direction: column !important;
+    }
+    .box .main_center .text_right{
+        margin-right: auto !important;
+        margin-left: auto !important;
+    }
+    .recipe_info .main_center .form_left{
+        margin-right: auto !important;
+    }
+    .recipe_text p{
+        font-size: 19px;
+    }
     .main_center{
         flex-direction: column;
         margin: auto;
@@ -808,10 +833,103 @@ table {
 
     .form_left{
         margin: auto !important;
+        margin-right: auto !important;
     }
-    textarea{
-        width: 720px;
-        height: 500px;
+    .form_left .form-control{
+        margin: auto !important;
+        margin-right: auto !important;
     }
 
+    iframe{
+        width: 600px;
+    }
+}
+
+@media screen and (max-width: 715px) {
+    h1{
+        font-size: 38px !important;
+    }
+    .main_center{
+        flex-direction: column;
+        margin: auto;
+    }
+
+    .text_right{
+        margin: auto!important;
+        margin-left: auto!important;
+        margin-right: auto!important;
+        margin-top: -10px;
+    }
+
+    .form_left{
+        margin: auto !important;
+    }
+    textarea{
+        width: 590px!important;
+        height: 400px!important;
+    }
+    iframe{
+        width: 500px;
+    }
+
+}
+
+@media screen and (max-width: 610px) {
+    .recipe_comment{
+        min-width: 400px !important;
+    }
+     textarea{
+        width: 500px!important;
+    }
+    iframe{
+        width: 390px;
+    }
+}
+
+@media screen and (max-width: 525px) {
+    textarea{
+        width: 410px!important;
+    }
+     iframe{
+        width: 370px;
+        height: 400px;
+    }
+}
+
+@media screen and (max-width: 445px) {
+    .recipe_image{
+        width: 280px;
+        height: 360px;
+    }
+    .check__box{
+        margin-left: 10px;
+    }
+    .check option{
+        margin-left: 30px;
+        margin-right: auto!important;
+    }
+    .check__info{
+        margin-left: 35px;
+        font-size: 19px;
+    }
+     textarea{
+        width: 370px!important;
+    }
+     iframe{
+        width: 300px;
+        height: 400px;
+    }
+}
+
+@media screen and (max-width: 410px) {
+    .recipe_comment{
+        min-width: 300px !important;
+    }
+    textarea{
+        width: 300px!important;
+    }
+     iframe{
+        width: 250px;
+        height: 300px;
+    }
 }

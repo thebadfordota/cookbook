@@ -48,12 +48,12 @@ class checking_data_registration:
         try:
             text = self.request.POST.get('text')
             text_count = re.findall(r"[А-яA-z]{1}", text)
-            if len(text_count) < 50 or len(text_count) > 4000:
+            if len(text_count) < 5 or len(text_count) > 4000:
                 1/0
 
             self.old_result['text'] = text
         except Exception:
-            self.error.append("Недопустимое описание рецепта, минимальное кол-во символов 50 максимальное 4000")
+            self.error.append("Недопустимое описание рецепта, минимальное кол-во символов 5 максимальное 4000")
 
     def check_meal_type(self):
         try:
@@ -316,6 +316,9 @@ class get_one_recipe:
             'recipe':one_recipe,
             'complexity_range': range(one_recipe.complexity)
         }
+        if one_recipe.public == False:
+            if self.request.user != one_recipe.user:
+                return redirect("/error.html")
         return render(self.request, "main/resipe.html", context)
 
 def check_authenticated_recipe_user(request, id_recipe):

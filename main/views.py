@@ -19,7 +19,6 @@ def get_range_without_zero(value):
 
 
 
-
 def home_page(request):
     recipe_type = ''
     complexity_type = ''
@@ -59,7 +58,12 @@ def home_page(request):
         old_ingredients = search_result[1]
     else:
         old_ingredients = ""
-
+    #вывод только публичных рецептов
+    buffer = []
+    for a in range(len(all_recipe)):
+        if all_recipe[a].public == True:
+            buffer.append(all_recipe[a])
+    all_recipe = buffer
 
     #пагинация
     paginations = Paginator(all_recipe, 4)
@@ -275,11 +279,13 @@ def edit_page(request, id_recipe):
 def add_coment(request, id_recipe):
     if services.check_authenticated_recipe(request, id_recipe) != None:
         return services.check_authenticated_recipe(request, id_recipe)
-
-    one_recipe = Recipe.objects.get(id=id_recipe)
-    text = request.POST.get('text_coment')
-    coment = Comments(recipe_id = one_recipe,user = request.user,text = text )
-    coment.save()
+    try:
+        one_recipe = Recipe.objects.get(id=id_recipe)
+        text = request.POST.get('text_coment')
+        coment = Comments(recipe_id = one_recipe,user = request.user,text = text )
+        coment.save()
+    except Exception:
+        return redirect("/error.html")
 
     return render(request, "main/coment.html", {'coment':coment,
                                                 'id_recipe':id_recipe,
@@ -298,19 +304,30 @@ def add_favorite(request, id_recipe):
     if services.check_authenticated_recipe(request, id_recipe) != None:
         return services.check_authenticated_recipe(request, id_recipe)
 
-    one_recipe = Recipe.objects.get(id=id_recipe)
-    favorite_recipe = FavoriteDishes(user = request.user, recipe_id = one_recipe )
-    favorite_recipe.save()
-    return redirect("/recipe/" + str(id_recipe))
+
+    try:
+        one_recipe = Recipe.objects.get(id=id_recipe)
+        try:
+            FavoriteDishes.objects.get(user = request.user, recipe_id = one_recipe)
+            return redirect("/error.html")
+        except Exception:
+            favorite_recipe = FavoriteDishes(user = request.user, recipe_id = one_recipe)
+            favorite_recipe.save()
+            return redirect("/recipe/" + str(id_recipe))
+    except Exception:
+        return redirect("/error.html")
+
 
 @csrf_exempt
 def delete_favorite(request, id_recipe):
     if services.check_authenticated_recipe(request, id_recipe) != None:
         return services.check_authenticated_recipe(request, id_recipe)
-
-    one_recipe = Recipe.objects.get(id=id_recipe)
-    favorite_recipe = FavoriteDishes.objects.get(user = request.user.id, recipe_id = one_recipe )
-    favorite_recipe.delete()
+    try:
+        one_recipe = Recipe.objects.get(id=id_recipe)
+        favorite_recipe = FavoriteDishes.objects.get(user=request.user.id, recipe_id=one_recipe)
+        favorite_recipe.delete()
+    except Exception:
+        return redirect("/error.html")
     return redirect("/recipe/" + str(id_recipe))
 
 @csrf_exempt
