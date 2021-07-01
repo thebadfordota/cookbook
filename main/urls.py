@@ -22,7 +22,6 @@ urlpatterns = [
     url(r'^recipe/update_recipe/([0-9]{1,5})', views.update_recipe),
     url(r'^recipe/edit_page/([0-9]{1,5})', views.edit_page),
     url(r'^error', views.error),
-    url(r'^', views.error)
 ]
 
 urlpatterns += staticfiles_urlpatterns()
