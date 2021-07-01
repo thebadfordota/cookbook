@@ -1,31 +1,149 @@
 {% extends 'main/base.html' %}
+{% load static %}
 {% block title %} {{ title }} {% endblock %}
+{% block script %}
+    function switch_to_page(page_number){
+        document.getElementById("search_bar").action = "/?page="+page_number
+        document.getElementById("submit_send_search").click()
 
+    }
+{% endblock %}
 {% block content %}
 <h1>{{ heading }}</h1>
 <div class="main_welcom">
-    <p>
-        Здравствуйте, это сайт для кулинарных рецептов!<br><br>
-        {{ info }}
-    </p>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Фамилия</th>
-                <th scope="col">Имя</th>
-            </tr>
-        </thead>
-        <tbody>
-            <td>Артёмов</td>
-            <td>Олег</td>
-        </tbody>
-    </table>
-    <form method="post" class="box">
+    <form method="post" class="box" id = "search_bar" >
+        <div class="main_center">
         {% csrf_token %}
-        {{ form.meal_type }}
-        <div class="mb-3">
-            <button type="submit" class="btn btn-success">GO</button>
+            <div class="form_left">
+                <input type="hidden" name="form_type" value="form_1">
+            </div>
+            <div class="form_left">
+                {{ form.selection_meal }}
+            </div>
+            <div class="form_left">
+                {{ form.selection_complexity }}
+            </div>
+            <div class="form_left">
+                {{ form.selection_cooking_time }}
+            </div>
+            <div class="form_left">
+                <input type = "input" name = "ingredients" value="{{ old_ingredients }}" class="form-control" style="height: 47px;">
+            </div>
+            <div class="text_right">
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-success" name=""  id = "submit_send_search">Принять</button>
+                </div>
+            </div>
         </div>
     </form>
+
+    <div class="main_welcome">
+        {% for el in all_recipe %}
+        <div class="container mt-5">
+            <div class="card">
+                <div class="card-header">
+                    <h5><a href="{% url 'view_recipe' el.pk %}" style="color: black;">{{ el.name }}</a></h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="{% url 'view_recipe' el.pk %}">
+                            <img src='{{ el.image.url }}'
+                                 class="img-fluid"
+                                 style="width: 570px; height: 90%; margin-top: 15px;">
+                        </a>
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="list-group list-group-flush" style="font-size: 19px;">
+                            <li class="list-group-item">Тип: {{ el.meal_type }}</li>
+                            <li class="list-group-item" style="display: flex;"><div class="card_text"> Сложность:</div>
+                                <form action="#" class="form form">
+                                    <div class="form_item">
+                                            {% for _ in el.complexity|get_range %}
+                                            <div class="complexity-rating">
+                                                <div class="complexity-rating__items">
+                                                    <input  type="radio" class="complexity-rating__item" name="complexity-rating" value="5">
+                                                    <label class="complexity-rating__label"></label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                    </div>
+                                </form>
+                            </li>
+                            <li class="list-group-item">Время приготовления:
+                                {% if el.hours <= 9 %}0{% endif %}{{ el.hours }}:{% if el.minutes <= 9 %}0{% endif %}{{ el.minutes }}
+                            </li>
+                            {% for curr_rate in all_rating %}
+                                {% if curr_rate.recipe_id == el %}
+                                    <li class="list-group-item" style="display: flex;"><div class="card_text">Ваш рейтинг:</div>
+                                        {% if user.is_authenticated %}
+                                            <form action="#" class="form form">
+                                                <div class="form_item">
+                                                        <div class="simple-rating">
+                                                            <div class="simple-rating__items">
+                                                                {% if curr_rate.rating == 5 %}
+                                                                    <input id="simple-rating__5" type="radio" class="simple-rating__item" checked  name="simple-rating" value="5">
+                                                                    <label for="simple-rating__5" class="simple-rating__label"></label>
+                                                                {% else %}
+                                                                    <input id="simple-rating__5" type="radio" class="simple-rating__item" name="simple-rating" value="5">
+                                                                    <label for="simple-rating__5" class="simple-rating__label"></label>
+                                                                {% endif %}
+
+                                                                {% if curr_rate.rating == 4 %}
+                                                                    <input id="simple-rating__4" type="radio" class="simple-rating__item" checked name="simple-rating" value="4">
+                                                                    <label for="simple-rating__4" class="simple-rating__label"></label>
+                                                                {% else %}
+                                                                    <input id="simple-rating__4" type="radio" class="simple-rating__item" name="simple-rating" value="4">
+                                                                    <label for="simple-rating__4" class="simple-rating__label"></label>
+                                                                {% endif %}
+
+                                                                {% if curr_rate.rating == 3 %}
+                                                                    <input id="simple-rating__3" type="radio" class="simple-rating__item" checked name="simple-rating" value="3">
+                                                                    <label for="simple-rating__3" class="simple-rating__label"></label>
+                                                                {% else %}
+                                                                    <input id="simple-rating__3" type="radio" class="simple-rating__item" name="simple-rating" value="3">
+                                                                    <label for="simple-rating__3" class="simple-rating__label"></label>
+                                                                {% endif %}
+
+                                                                {% if curr_rate.rating == 2 %}
+                                                                    <input id="simple-rating__2" type="radio" class="simple-rating__item" checked name="simple-rating" value="2">
+                                                                    <label for="simple-rating__2" class="simple-rating__label"></label>
+                                                                {% else %}
+                                                                    <input id="simple-rating__2" type="radio" class="simple-rating__item" name="simple-rating" value="2">
+                                                                    <label for="simple-rating__2" class="simple-rating__label"></label>
+                                                                {% endif %}
+
+                                                                {% if curr_rate.rating == 1 %}
+                                                                    <input id="simple-rating__1" type="radio" class="simple-rating__item"checked name="simple-rating" value="1">
+                                                                    <label for="simple-rating__1" class="simple-rating__label"></label>
+                                                                {% else %}
+                                                                    <input id="simple-rating__1" type="radio" class="simple-rating__item" name="simple-rating" value="1">
+                                                                    <label for="simple-rating__1" class="simple-rating__label"></label>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </form>
+                                            {% endif %}
+                                        </li>
+                                {% endif %}
+                            {% endfor %}
+                            <li class="list-group-item">Общий рейтинг: {{ el.rating.rating }}/5</li>
+                        </ul>
+                        <button type="button" class="btn btn-primary" style="color: white; width: 110px; height: 50px;
+margin-top: 20px;"
+                           onclick="window.location.href='{% url 'view_recipe' el.pk %}'">Перейти</button >
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
+<nav aria-label="Page navigation example" style="margin: auto; margin-top: 45px;">
+   <ul class="pagination">
+        {% for a in paginations.num_pages|get_range_without_zero %}
+            <li class="page-item"><a class="page-link"  onclick="switch_to_page({{ a }})">{{ a }}</a></li>
+        {% endfor %}
+   </ul>
+</nav>
 {% endblock %}

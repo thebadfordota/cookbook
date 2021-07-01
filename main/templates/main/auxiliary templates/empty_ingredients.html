@@ -1,0 +1,14 @@
+{% if a == 0 %}
+ {# вывод всех полей для ввода ингридиентов #}
+<tr>
+    <td><input type="input"   id = "N0" name = "N0" oninput="check_table()"> </td>
+    <td><input type="number" min = 1  size = 10 id = "V0" name = "V0" oninput="check_table()"> </td>
+    <td><input type="input"   id = "U0" name = "U0" oninput="check_table()"> </td>
+</tr>
+{% else %}
+     <tr style = "display:none;" id = "T{{a}}">
+        <td><input type="input" id  = "N{{a}}" name = "N{{a}}" oninput="check_table()" ></td>
+        <td><input type="number" min = 1  size = 10 id = "V{{a}}" name = "V{{a}}" oninput="check_table()"></td>
+         <td><input type="input"   id = "U{{a}}" name = "U{{a}}" oninput="check_table()"> </td>
+    </tr>
+{% endif %}

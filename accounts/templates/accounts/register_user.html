@@ -5,11 +5,33 @@
 <h2>Регистрация нового пользователя</h2>
 <form method="post" class="box">
     <div class="main_welcom">
-    {% csrf_token %}
-    {{ form.as_p }}
-    </div>
-        <div class="mb-3">
-        <button type="submit" class="btn btn-success">Зарегестрироваться</button>
+        <div class="reg_form">
+            {% csrf_token %}
+            <h2 style="margin-top: 25px;">Логин:</h2>
+            {{ form.username }}
+            <h2>Почта:</h2>
+            {{ form.email }}
+            <h2>Пароль:</h2>
+            {{ form.password1 }}
+            <h2>Подтвердите пароль:</h2>
+            {{ form.password2 }}
+            <h2>Имя:</h2>
+            {{ form.first_name }}
+            <h2>Фамилия:</h2>
+            {{ form.last_name }}
+            <h2>Отправлять сообщения:</h2>
+            <label class="check option" style="min-width: auto; margin: auto; margin-top: 45px;">
+                {{ form.send_messages }}
+                <span class="check__box"></span>
+                <span class="check__info">Отправлять уведомления</span><br><br>
+            </label>
+            <br>
+            <h2 style="margin-top: 0;">Аватар:</h2>
+            {{ form.image }}
+        </div>
+            <div class="mb-3" style="margin-top: 45px;">
+            <button type="submit" class="btn btn-success">Зарегистрироваться</button>
+        </div>
     </div>
 </form>
 {% endblock %}
