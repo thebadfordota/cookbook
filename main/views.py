@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from .forms import *
 from .models import *
 from accounts.models import *
@@ -16,7 +16,6 @@ def get_range(value):
 @register.filter
 def get_range_without_zero(value):
     return range(1,value+1)
-
 
 
 def home_page(request):
