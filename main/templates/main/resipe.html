@@ -112,10 +112,10 @@
 
     */
     function step_1_edit_coment(input_botton, input_text, url_updata, comment_id){
-             document.getElementById(input_botton).innerHTML = "<input type=\"button\" value = \"Сохранить\" onclick=\"step_2_edit_coment('"+input_botton+"','"+input_text+"', '"+url_updata+"' , '"+comment_id+"' )\">" ;
+             document.getElementById(input_botton).innerHTML = "<input type=\"button\" value = \"Сохранить\" style=\"width: 150px!important;\" onclick=\"step_2_edit_coment('"+input_botton+"','"+input_text+"', '"+url_updata+"' , '"+comment_id+"' )\">" ;
              var old_coment = document.getElementById(input_text).innerHTML;
              document.getElementById(input_text).innerHTML = "<input type=\"text\" value = \""+old_coment+"\" id = \""+input_text+"T\">" ;
-        // "<input type=\"button\" value = \"Сохранить\" onclick=\"step_2_edit_coment()\">" ;
+        // "<input type=\"button\" value = \"Сохранить\" style="width: 150px!important;" onclick=\"step_2_edit_coment()\">" ;
     }
     function step_2_edit_coment(input_botton, input_text, url_updata, comment_id){
        document.getElementById(input_botton).innerHTML = "<input type=\"button\" value = \"Редактировать\" onclick=\"step_1_edit_coment('"+input_botton+"','"+input_text+"', '"+url_updata+"' )\">" ;
@@ -411,7 +411,7 @@
                                                                 onclick="delete_coment('delete_coment/{{ a.id }}/{{ id_recipe }}','coment{{ a.id }}')">Удалить</button>
                                                     </div>
                                                     <div class="text_right">
-                                                        <samp id = "coment_edit_botton{{ a.id }}" >
+                                                        <samp id = "coment_edit_botton{{ a.id }}">
                                                             <button type="button"
                                                                     value = "Редактировать"
                                                                     class="btn btn-outline-info"
