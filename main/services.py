@@ -316,6 +316,9 @@ class get_one_recipe:
             'recipe':one_recipe,
             'complexity_range': range(one_recipe.complexity)
         }
+        if one_recipe.public == False:
+            if self.request.user != one_recipe.user:
+                return redirect("/error.html")
         return render(self.request, "main/resipe.html", context)
 
 def check_authenticated_recipe_user(request, id_recipe):

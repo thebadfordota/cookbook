@@ -59,7 +59,12 @@ def home_page(request):
         old_ingredients = search_result[1]
     else:
         old_ingredients = ""
-
+    #вывод только публичных рецептов
+    buffer = []
+    for a in range(len(all_recipe)):
+        if all_recipe[a].public == True:
+            buffer.append(all_recipe[a])
+    all_recipe = buffer
 
     #пагинация
     paginations = Paginator(all_recipe, 4)
