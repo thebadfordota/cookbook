@@ -122,7 +122,7 @@ def view_chosen_recipes(request):
     return render(request, "main/chosen_recipes.html", context)
 
 def view_yours_recipe(request):
-    title = 'Свои рецепты'
+    title = 'Мои рецепты'
     all_recipe = Recipe.objects.order_by('id')
     all_rating = Rating.objects.order_by('id')
     buffer = []
