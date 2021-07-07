@@ -1,0 +1,24 @@
+{% extends 'main/base.html' %}
+{% block title %} Войти {% endblock %}
+
+{% block content %}
+<h2>Войти в аккаунт</h2>
+{% if user.is_authenticated %}
+<p>Вход был выполнен.</p>
+{% else %}
+<form method="post" class="box">
+    <div class="main_welcom">
+        <div class="reg_form">
+            {% csrf_token %}
+            <h2 style="margin-top: 25px;">Логин</h2>
+            {{ form.username }}
+            <h2>Пароль</h2>
+            {{ form.password }}
+            <div class="mb-3" style="margin-top: 35px;">
+                <button type="submit" class="btn btn-success">Войти</button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endif %}
+{% endblock %}

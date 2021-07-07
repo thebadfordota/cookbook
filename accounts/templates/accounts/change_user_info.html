@@ -1,0 +1,17 @@
+{% extends 'main/base.html' %}
+{% block title %} Правка личных данных {% endblock %}
+
+{% block content %}
+<div class="main_content">
+<h2>Изменить данные пользователя {{user.username}}</h2>
+<form method="post" class="box">
+    <div class="main_welcom">
+    {% csrf_token %}
+    {{ form.as_p }}
+        <div class="mb-3">
+        <button type="submit" class="btn btn-success">Изменить</button>
+    </div>
+        </div>
+</form>
+</div>
+{% endblock %}

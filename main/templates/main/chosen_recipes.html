@@ -1,0 +1,45 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+<h1>{{ heading }}</h1>
+<div class="main_welcom">
+    <div class="scroll_table">
+      <table class="table table-striped table-hover chose_table table-bordered border-dark">
+        <thead>
+          <tr>
+            <th style="max-width: 150px;" scope="col">Название</th>
+            <th scope="col">Тип</th>
+            <th style="min-width: 190px;" scope="col">Сложность</th>
+            <th scope="col">Время</th>
+            <th scope="col"  style="width: 250px;">Общий рейтинг</th>
+        </thead>
+           <tbody>
+          {% for el in all_recipe %}
+          <tr>
+              <td><a href="{% url 'view_recipe' el.pk %}">{{ el.name }}</a></td>
+            <td>{{ el.meal_type }}</td>
+            <td>
+              <form action="#" class="form form">
+                  <div class="form_item">
+                          {% for _ in el.complexity|get_range %}
+                          <div class="complexity-rating">
+                              <div class="complexity-rating__items">
+                                  <input  type="radio" class="complexity-rating__item" name="complexity-rating" value="5">
+                                  <label class="complexity-rating__label"></label>
+                              </div>
+                          </div>
+                          {% endfor %}
+                  </div>
+              </form>
+            </td>
+            <td>{% if el.hours <= 9 %}0{% endif %}{{ el.hours }}:{% if el.minutes <= 9 %}0{% endif %}{{ el.minutes }}</td>
+            <td>{{ el.rating.rating }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+</div>
+{% endblock %}

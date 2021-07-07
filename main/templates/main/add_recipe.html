@@ -1,0 +1,174 @@
+{% extends 'main/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+{% block script %}
+    function check_zero_hours(){
+        hours = document.getElementById("hours_time").value
+        if (hours == 0){
+          document.getElementById("hours_time").value = "";
+        }
+    }
+    function check_zero_minutes(){
+      minutes = document.getElementById("minutes_time").value
+      if (minutes == 0){
+        document.getElementById("minutes_time").value = "";
+      }
+    }
+    {% if count_ingredients == 0 %}
+        count_ingredients = 0;
+
+    {% else %}
+        count_ingredients = {{len}};
+    {% endif %}
+
+    function check_table(){
+      tbody_table = document.getElementById("tbody_table_ingredients").innerHTML
+      last_N = document.getElementById("N"+count_ingredients).value;
+      last_V = document.getElementById("U"+count_ingredients).value;
+      if (last_N != "" && last_V != ""){
+        count_ingredients += 1;
+        document.getElementById("T"+count_ingredients).style.display = "table-row";
+      }
+
+    }
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="main_welcom">
+        <h1 align = "center" style="margin-bottom: 25px;" > {{ title }} </h1>
+        <div class="alert alert-info" role="alert">
+            * - обязательные поля <br>
+                {% for a in error %}
+                    {{a}}<br>
+                {% endfor %}
+        </div>
+        <form action="{{ action }}" method = "POST" enctype="multipart/form-data" class="box" style="margin-top: 45px;">
+            {% csrf_token %}
+            <div class="main_center" style="margin: auto;">
+                <div class="form_left" style="margin: auto;">Название рецепта* </div>
+                <div class="text_right" style="margin: auto;">
+                    <input type="text" name = "name" value = "{{old_result.name}}"
+                   placeholder="Название рецепта">
+                </div>
+            </div><br>
+            <div class="main_center" style="margin: auto;">
+                <div class="form_left" style="margin: auto;">Загрузить картинку* </div>
+                <div class="text_right" style="margin: auto;">
+                    <input type="file" name = "image" id="getFile">
+                </div>
+            </div><br>
+            <label class="check option" style="min-width: auto; margin: auto;">
+                <input class="check__input" type ="checkbox" name = "public"
+                       {% if old_result.public == "True" %} checked {% endif %}>
+                <span class="check__box"></span>
+                <span class="check__info">Сделать рецепт публичным</span><br><br>
+             </label><br>
+            <div class="main_center" style="margin: auto;">
+                <div class="form_left" style="margin: auto;">Ссылка на видео в youtube </div>
+                <div class="text_right" style="margin: auto;">
+                    <input type="text" name = "url_video"
+                           value="{% if old_result.url_video != 'NULL' %}{{  old_result.url_video }}{% endif %}"
+                    placeholder="Ссылка на видео в youtube">
+                </div>
+            </div><br>
+            <select name = "meal">
+                {% for a in meal %}
+                     {% if a == old_result.meal_type %}
+                         <option value="{{a}}" selected>{{a}}</option>
+                    {% else %}
+                        <option value="{{a}}">{{a}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select> <br><br>
+            <h4>Напишите инструкцию по приготовлению*</h4>
+            <textarea maxlength = 4000 name = "text" rows = 15  style="padding:10px;">
+                {{old_result.text}}
+            </textarea><br>
+            <div class="main_center" style="margin: auto;">
+                <div class="form_left" style="margin: auto;">Время приготовление (часы)*</div>
+                <div class="text_right" style="margin: auto;">
+                    <input type="number"  id = "hours_time" min = 0 max = 10 value = "{{ old_result.hours }}{{ hours }}" size = 10 name="time_hour" placeholder="Сколько часов занимает приготовление" onclick="check_zero_hours()">
+                </div>
+            </div><br>
+            <div class="main_center" style="margin: auto;">
+                <div class="form_left" style="margin: auto;">Время приготовление (минуты)*</div>
+                <div class="text_right" style="margin: auto;">
+                    <input type="number" id = "minutes_time" min = 0 max = 59 value = "{{ old_result.minutes }}{{ minutes }}" size = 10 name="time_minutes" onclick="check_zero_minutes()">
+                </div>
+            </div><br>
+            <div class="main_center" style="margin: auto;">
+                <div class="form_left" style="margin: auto;">Сложность приготовления*</div>
+                <div class="text_right" style="margin: auto;">
+                    <select name = "complexity">
+                        <option value="1" selected>Очень легко</option>
+                        {% if old_result.complexity == '2' %}
+                            <option value="2" selected>Легко</option>
+                        {% else %}
+                            <option value="2" >Легко</option>
+                        {% endif %}
+
+                        {% if old_result.complexity == '3' %}
+                            <option value="3" selected>Средне</option>
+                        {% else %}
+                            <option value="3" >Средне</option>
+                        {% endif %}
+
+                        {% if old_result.complexity == '4' %}
+                            <option value="4" selected>Сложно</option>
+                        {% else %}
+                            <option value="4" >Сложно</option>
+                        {% endif %}
+
+                        {% if old_result.complexity == '5' %}
+                            <option value="5" selected>Очень сложно</option>
+                        {% else %}
+                            <option value="5" >Очень сложно</option>
+                        {% endif %}
+                    </select>
+                </div>
+            </div><br>
+
+            <h4>Введите все ингредиенты*</h4>
+            <div class="scroll_table">
+                <table class="table table-striped table-hover=" style="justify-content: center; text-align: center; width: 100%; margin: 0 !important;">
+                    <thead>
+                        <tr>
+                            <th scope="col">Название</th>
+                            <th scope="col">Количество</th>
+                             <th scope="col">Единицы измерения</th>
+                        </tr>
+                    </thead>
+                        <tbody id = "tbody_table_ingredients" onclick="check_table()" >
+                            {% if len >= 0 %}
+                                {% for a in ingredients %}
+                                    <tr style = "margin: auto;">
+                                        <!-- id_name, name,id_value, value -->
+                                        <!-- name --> <td> <input type="input"   id = "{{ a.id_name }}" name = "{{ a.id_name }}" value = "{{ a.name}}" oninput="check_table()"></td>
+                                        <!-- value --> <td><input type="number" min = 1   size = 10 id = "{{ a.id_value }}" name = "{{ a.id_value }}" value = "{% if a.value != -1 %}{{ a.value }}{% endif %}" oninput="check_table()"></td>
+                                        <!-- units --><td><input type="input"   id = "{{a.id_units}}" name = "{{a.id_units}}" value = "{{ a.units }}" oninput="check_table()"> </td>
+                                    </tr>
+                                {% endfor %}
+
+                                {% for a in new_input %}
+                                    <!-- ["T"+str(a), 'N'+str(a), 'V'+str(a)] -->
+                                    <tr style = "display: none; margin: auto;" id = "{{a.id_tr}}">
+                                        <td> <input type="input" id = "{{a.id_name}}" name = "{{a.id_name}}" oninput="check_table()"></td>
+                                        <td> <input type="number" min = 1  size = 10 id = "{{a.id_value}}" name = "{{a.id_value}}" oninput="check_table()"></td>
+                                        <td><input type="input"   id = "{{a.id_units}}" name = "{{a.id_units}}" value = "{{ a.units }}" oninput="check_table()"> </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                {% for a in 30|get_range %}
+                                    {# вывод всех полей для ввода ингридиентов #}
+                                   {% include 'main/auxiliary templates/empty_ingredients.html' %}
+                                {% endfor %}
+                        {% endif %}
+                        </tbody>
+                </table>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-success">{{ button_info }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

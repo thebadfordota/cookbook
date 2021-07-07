@@ -1,0 +1,9 @@
+{% extends 'main/base.html' %}
+{% block title %} Активация выполнена {% endblock%}
+{% block content %}
+<div class="main_welcom">
+    <h1>Активация</h1>
+    <p>Пользователь с таким  именем успешно активирован.</p>
+    <p><a href="{% url 'accounts:login' %}">Войти на сайт</a></p>
+</div>
+{% endblock %}

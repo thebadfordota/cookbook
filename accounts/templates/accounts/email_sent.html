@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+{% block title %} Правка личных данных {% endblock %}
+
+{% block content %}
+<h2>Восстановление пароля</h2>
+<form method="post">
+    {% csrf_token %}
+    Письмо с инструкциями отправлено на Ваш email
+</form>
+{% endblock %}

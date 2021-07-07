@@ -1,0 +1,37 @@
+<div id = "coment{{ coment.id }}" style="width: 100%; height: auto;">
+    <div class="container mt-5" style="width: 100%; margin: auto;">
+         <div class="card" style="width: 100%; margin: auto;">
+                <div class="card-header" style="justify-content: center; text-align: center;">
+                    <h5>Автор {{ coment.user.username }} </h5>
+                    <i class="fa fa-clock-o" aria-hidden="true"></i> {{ coment.data_time }}
+                </div>
+                <div class="row">
+                    <div class="col-md-8" style="margin: auto; min-height: 100px;">
+                        <samp id = "coment_edit_text{{ a.id }}" style="width: 100%;" >{{ coment.text }}</samp><br>
+                        {% if coment.user.id == user.id %}
+                            <div class="box" style="width: auto;">
+                                <div class="main_center" style="margin: auto;">
+                                    <div class="form_left" style="margin-right: 100px;">
+                                        <button type="submit"
+                                                value = "Удалить"
+                                                onclick="delete_coment('delete_coment/{{ coment.id }}/{{ id_recipe }}','coment{{ coment.id }}' )">Удалить</button>
+                                    </div>
+                                    <div class="text_right">
+                                        <samp id = "coment_edit_botton{{ coment.id }}">
+                                            <button type="button"
+                                                    value = "Редактировать"
+                                                    class="btn btn-outline-info"
+                                                    style="border-radius: 34px; height: 65px;"
+                                                    onclick="step_1_edit_coment('coment_edit_botton{{ coment.id }}','coment_edit_text{{ coment.id }}', 'delete_coment/{{ coment.id }}/{{ id_recipe }}','coment{{ coment.id }}')">
+                                                Редактировать
+                                            </button>
+                                        </samp>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+         </div>
+    </div>
+</div>
